@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Locations · Version A (Map-first) · Alpha School prototype</title>
+<link rel="preconnect" href="https://rsms.me/"><link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<style>
+:root{--bg:#fff;--fg:#0a0a0a;--muted:#6b6b6b;--line:#ececec;--soft:#f6f6f6;--accent:#1f4bff;--accent-soft:#eef2ff;--radius:14px;
+--font:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1280px;margin:0 auto;height:64px;padding:0 28px;display:flex;align-items:center;gap:32px}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.03em;text-decoration:none}
+.logo span{color:var(--accent)}
+.nav-links{display:flex;gap:28px;margin-left:auto;align-items:center}
+.nav-links a{text-decoration:none;font-size:14px;color:#333}
+.nav-links a:hover{color:var(--fg)}
+.nav-links a.active{color:var(--fg);font-weight:600;border-bottom:2px solid var(--fg);padding-bottom:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font:600 14px/1 var(--font);text-decoration:none;cursor:pointer;border:1px solid var(--fg);background:var(--fg);color:#fff;white-space:nowrap;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:#fff;color:var(--fg);border-color:#d6d6d6}
+.btn.ghost:hover{border-color:var(--fg)}
+.btn.accent{background:var(--accent);border-color:var(--accent)}
+.btn.sm{height:36px;padding:0 14px;font-size:13px}
+.nav .btn{height:38px;padding:0 18px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge.open{background:var(--accent-soft);color:var(--accent)}
+.badge.waitlist{background:#f3f3f3;color:#333}
+.badge.proposed{background:#fff;color:var(--muted);border:1px dashed #cfcfcf}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.foot{border-top:1px solid var(--line);margin-top:96px}
+.foot-in{max-width:1280px;margin:0 auto;padding:40px 28px;display:flex;flex-wrap:wrap;gap:16px 40px;align-items:center;color:var(--muted);font-size:14px}
+.foot-in strong{color:var(--fg)}
+.foot-in a{text-decoration:none}
+.proto{position:fixed;left:16px;bottom:16px;z-index:2000;font-size:12px;background:var(--fg);color:#fff;padding:6px 12px;border-radius:999px;opacity:.85}
+.proto a{color:#fff}
+@media (max-width:820px){.nav-in{padding:0 18px;gap:16px}.nav-links .hide-m{display:none}.nav-links{gap:18px}}
+.nav-links a.btn{color:#fff}.nav-links a.btn:hover{color:#fff}
+
+.hero{max-width:1280px;margin:0 auto;padding:40px 28px 22px;display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.hero h1{font-size:clamp(32px,4.4vw,54px);line-height:1.02;letter-spacing:-.035em;margin:10px 0 12px;font-weight:700}
+.hero p{margin:0;color:var(--muted);font-size:18px;max-width:560px}
+.hero-actions{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.toolbar{max-width:1280px;margin:0 auto;padding:0 28px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{flex-shrink:0;white-space:nowrap;height:36px;padding:0 14px;border-radius:999px;border:1px solid #dcdcdc;background:#fff;font:500 13px var(--font);cursor:pointer;color:#333}
+.chip[aria-pressed=true]{background:var(--fg);color:#fff;border-color:var(--fg)}
+.chip .n{opacity:.55;margin-left:4px}
+.legend{margin-left:auto;display:flex;gap:16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.stage{max-width:1280px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:380px 1fr;gap:20px;height:calc(100vh - 64px - 40px);min-height:560px;max-height:820px}
+.list{border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden}
+.list-h{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:14px}
+.list-h b{font-size:15px}
+.list-h button{border:0;background:none;color:var(--accent);font:600 13px var(--font);cursor:pointer}
+.items{overflow:auto;flex:1}
+.item{display:flex;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s}
+.item:hover,.item.hl{background:var(--soft)}
+.item .t{font-weight:600;font-size:15px;letter-spacing:-.01em}
+.item .s{font-size:13px;color:var(--muted)}
+.item .r{margin-left:auto;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.item .d{font-size:12px;color:var(--muted)}
+.empty{padding:28px 18px;color:var(--muted);font-size:14px}
+.empty a{color:var(--accent);font-weight:600}
+#map{border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;background:#f2f2f0}
+.leaflet-container{font-family:var(--font)}
+.tiles{filter:grayscale(1) contrast(.9) brightness(1.06)}
+.pin{width:18px;height:18px;border-radius:50%;background:var(--fg);border:3px solid #fff;box-shadow:0 0 0 1.5px var(--fg),0 4px 10px rgba(0,0,0,.25);transition:transform .15s}
+.pin.open{background:var(--accent);box-shadow:0 0 0 1.5px var(--accent),0 4px 10px rgba(31,75,255,.35)}
+.pin.waitlist{background:#fff;box-shadow:0 0 0 2px var(--fg),0 4px 10px rgba(0,0,0,.2)}
+.pin.proposed{background:#fff;border:2px dashed #999;box-shadow:none}
+.pin.hl{transform:scale(1.5)}
+.cl{display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--fg);color:#fff;font:700 13px var(--font);border:4px solid rgba(255,255,255,.9);box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.me{width:16px;height:16px;border-radius:50%;background:#1f4bff;border:3px solid #fff;box-shadow:0 0 0 8px rgba(31,75,255,.18)}
+.leaflet-popup-content-wrapper{border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.18);padding:4px}
+.leaflet-popup-content{margin:16px 18px;width:270px!important}
+.pc h3{margin:8px 0 2px;font-size:19px;letter-spacing:-.02em}
+.pc .m{color:var(--muted);font-size:13px;margin-bottom:12px}
+.pc .meta{font-size:13px;color:#333;border-top:1px solid var(--line);padding-top:10px;margin-bottom:14px}
+.pc .meta div{display:flex;justify-content:space-between;gap:10px}
+.pc .meta span{color:var(--muted)}
+.pc .b{display:flex;flex-direction:column;gap:8px}
+.pc .btn{height:40px;width:100%}
+.pc .lk{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+.leaflet-popup-content a.btn{color:#fff}.leaflet-popup-content a.btn.ghost{color:var(--fg)}
+.note{max-width:1280px;margin:14px auto 0;padding:0 28px;font-size:12px;color:var(--muted)}
+.toast{position:absolute;z-index:999;left:50%;top:14px;transform:translateX(-50%);background:var(--fg);color:#fff;font-size:13px;padding:8px 14px;border-radius:999px;display:none}
+.mapwrap{position:relative}.mapwrap #map{position:absolute;inset:0}
+.view-toggle{display:none}
+@media (max-width:900px){
+ .hero{padding:24px 18px 14px;gap:16px}.hero h1{font-size:34px;margin:6px 0 8px}.hero p{font-size:15px}.hero-actions{margin-left:0;width:100%;flex-wrap:nowrap;gap:8px}.hero-actions .btn{flex:1;height:42px;padding:0 12px;font-size:13px}
+ .toolbar{padding:0 18px 12px;flex-wrap:nowrap;overflow-x:auto}.legend{display:none}
+ .stage{grid-template-columns:1fr;grid-template-rows:56vh auto;height:auto;max-height:none;padding:0 18px}
+ .mapwrap{order:1;height:56vh}.list{order:2;max-height:none}.items{max-height:none}
+ .note{padding:0 18px}
+}
+</style></head>
+<body>
+<header class="nav"><div class="nav-in">
+  <a class="logo" href="index.html">alpha<span>.</span></a>
+  <nav class="nav-links">
+    <a class="hide-m" href="https://alpha.school/the-program/#love">Love School</a>
+    <a class="hide-m" href="https://alpha.school/the-program/#learn">Learn 2x in 2hrs</a>
+    <a class="hide-m" href="https://alpha.school/admission/">Admission</a>
+    <a class="active" href="#" aria-current="page">Locations</a>
+    <a class="btn" href="https://alpha.school/admission/">Apply</a>
+  </nav>
+</div></header>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">Locations</div>
+    <h1>Find your Alpha campus.</h1>
+    <p><span id="total"></span> campuses and counting. Love School. Learn 2x in 2hrs. Zoom in or tap a pin to see more.</p>
+  </div>
+  <div class="hero-actions">
+    <button class="btn ghost" id="locate">◎ Use my location</button>
+    <a class="btn" href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to your city</a>
+  </div>
+</section>
+<div class="toolbar" role="group" aria-label="Filter by status">
+  <button class="chip" data-f="all" aria-pressed="true">All<span class="n" id="n-all"></span></button>
+  <button class="chip" data-f="open" aria-pressed="false">Now enrolling<span class="n" id="n-open"></span></button>
+  <button class="chip" data-f="waitlist" aria-pressed="false">2026–27 waitlist<span class="n" id="n-waitlist"></span></button>
+  <div class="legend"><span><i style="background:var(--accent)"></i>Now enrolling</span><span><i style="border:2px solid #000;background:#fff"></i>Waitlist</span><span><i style="border:2px dashed #999"></i>Proposed</span></div>
+</div>
+<main class="stage">
+  <aside class="list" aria-label="Campuses in view">
+    <div class="list-h"><span><b id="inview">0</b> <span id="inviewl">campuses</span> in view</span><button id="reset">Show all</button></div>
+    <div class="items" id="items"></div>
+  </aside>
+  <div class="mapwrap"><div id="map" aria-label="Map of Alpha campuses"></div><div class="toast" id="toast"></div></div>
+</main>
+<p class="note">Prototype. Campus list pulled from alpha.school/locations on Oct 20, 2026. Pins are approximate (ZIP or city centroid). Map © OpenStreetMap contributors.</p>
+<footer class="foot"><div class="foot-in">
+  <strong>alpha.</strong><span>Love School. Learn 2x in 2hrs.</span>
+  <a href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to your city</a>
+  <a href="https://alphaanywhere.co/">Alpha Anywhere</a>
+  <span style="margin-left:auto">Design prototype · not the live site</span>
+</div></footer>
+
+<div class="proto">Prototype A · Map-first · <a href="index.html">switch</a></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>// Generated from https://alpha.school/locations/ (pulled 2026-10-20). Geocodes: US Census 2023 Gazetteer (approximate).
+window.ALPHA_CAMPUSES=[{"id": "alpha-austin", "name": "Alpha Austin", "grades": "PK-8", "address": "1201 Spyglass Dr, Austin, TX 78746", "city": "Austin", "state": "TX", "stateName": "Texas", "lat": 30.2969, "lng": -97.8096, "status": "open", "note": "", "price": "$40,000", "url": "https://alpha.school/austin/", "applyUrl": "https://alpha.school/application/?submission_campus=austin_k8", "applyLabel": "Apply Now!", "geo": "ZIP centroid 78746"}, {"id": "alpha-high", "name": "Alpha High", "grades": "9-12", "address": "201 Colorado St, Austin, TX 78701", "city": "Austin", "state": "TX", "stateName": "Texas", "lat": 30.2706, "lng": -97.7426, "status": "waitlist", "note": "", "price": "$40,000", "url": "https://alphahigh.school", "applyUrl": "https://alphahigh.school/application/?submission_campus=austin_high", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 78701"}, {"id": "alpha-brownsville", "name": "Alpha Brownsville", "grades": "K-12", "address": "591 N. Central Ave, Brownsville, TX 78521", "city": "Brownsville", "state": "TX", "stateName": "Texas", "lat": 25.9439, "lng": -97.3179, "status": "open", "note": "", "price": "$10,000", "url": "https://alpha.school/brownsville/", "applyUrl": "https://alpha.school/application/?submission_campus=brownsville_k8", "applyLabel": "Apply Now!", "geo": "ZIP centroid 78521"}, {"id": "alpha-santa-barbara", "name": "Alpha Santa Barbara", "grades": "K-12", "address": "27 East Cota St, Santa Barbara, CA 93101", "city": "Santa Barbara", "state": "CA", "stateName": "California", "lat": 34.4193, "lng": -119.708, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/santa-barbara/", "applyUrl": "https://alpha.school/application/?submission_campus=santa_barbara", "applyLabel": "Apply Now!", "geo": "ZIP centroid 93101"}, {"id": "alpha-new-york", "name": "Alpha New York", "grades": "K-12", "address": "180 Maiden Ln, New York, NY 10038", "city": "New York", "state": "NY", "stateName": "New York", "lat": 40.7093, "lng": -74.0029, "status": "waitlist", "note": "Homeschool support center", "price": "$65,000", "url": "https://alpha.school/new-york-city/", "applyUrl": "https://apply.alpha.school/new-york", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 10038"}, {"id": "alpha-miami", "name": "Alpha Miami", "grades": "K-12", "address": "8000 SW 56th St, Miami, FL 33155", "city": "Miami", "state": "FL", "stateName": "Florida", "lat": 25.7378, "lng": -80.3112, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/miami/", "applyUrl": "https://alpha.school/application/?submission_campus=miami", "applyLabel": "Apply Now!", "geo": "ZIP centroid 33155"}, {"id": "alpha-the-woodlands", "name": "Alpha The Woodlands", "grades": "K-8", "address": "2000 Woodlands Parkway, The Woodlands, TX 77380", "city": "The Woodlands", "state": "TX", "stateName": "Texas", "lat": 30.137, "lng": -95.4684, "status": "waitlist", "note": "", "price": "$40,000", "url": "https://alpha.school/the-woodlands/", "applyUrl": "https://alpha.school/application/?submission_campus=the_woodlands", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 77380"}, {"id": "alpha-fort-worth", "name": "Alpha Fort Worth", "grades": "K-8", "address": "3300 Bryant Irvin Rd, Fort Worth, TX 76109", "city": "Fort Worth", "state": "TX", "stateName": "Texas", "lat": 32.7007, "lng": -97.387, "status": "open", "note": "", "price": "$40,000", "url": "https://alpha.school/fort-worth/", "applyUrl": "https://alpha.school/application/?submission_campus=fort_worth", "applyLabel": "Apply Now!", "geo": "ZIP centroid 76109"}, {"id": "alpha-scottsdale", "name": "Alpha Scottsdale", "grades": "K-8", "address": "20624 N 76th St, Scottsdale, AZ 85255", "city": "Scottsdale", "state": "AZ", "stateName": "Arizona", "lat": 33.6682, "lng": -111.8225, "status": "waitlist", "note": "", "price": "$40,000", "url": "https://alpha.school/scottsdale/", "applyUrl": "https://alpha.school/application/?submission_campus=scottsdale", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 85255"}, {"id": "alpha-palm-beach", "name": "Alpha Palm Beach", "grades": "K-8", "address": "10350 Riverside Dr, Palm Beach Gardens, FL 33410", "city": "Palm Beach Gardens", "state": "FL", "stateName": "Florida", "lat": 26.8457, "lng": -80.0874, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/palm-beach/", "applyUrl": "https://alpha.school/application/?submission_campus=palm_beach", "applyLabel": "Apply Now!", "geo": "ZIP centroid 33410"}, {"id": "alpha-orange-county", "name": "Alpha Orange County", "grades": "K-8", "address": "26462 Towne Centre Dr, Lake Forest, CA 92610", "city": "Lake Forest", "state": "CA", "stateName": "California", "lat": 33.6834, "lng": -117.6541, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/orange-county/", "applyUrl": "https://alpha.school/application-fs/?submission_campus=orange_county", "applyLabel": "Apply Now!", "geo": "ZIP centroid 92610"}, {"id": "alpha-raleigh", "name": "Alpha Raleigh", "grades": "K-8", "address": "12600 Spruce Tree Way, Raleigh, NC 27614", "city": "Raleigh", "state": "NC", "stateName": "North Carolina", "lat": 35.9459, "lng": -78.6195, "status": "waitlist", "note": "", "price": "$45,000", "url": "https://alpha.school/raleigh/", "applyUrl": "https://alpha.school/application/?submission_campus=raleigh", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 27614"}, {"id": "alpha-charlotte", "name": "Alpha Charlotte", "grades": "K-8", "address": "4801 Prosperity Church Rd, Charlotte, NC 28269", "city": "Charlotte", "state": "NC", "stateName": "North Carolina", "lat": 35.3373, "lng": -80.8035, "status": "open", "note": "", "price": "$45,000", "url": "https://alpha.school/charlotte/", "applyUrl": "https://alpha.school/application/?submission_campus=charlotte", "applyLabel": "Apply Now!", "geo": "ZIP centroid 28269"}, {"id": "alpha-chantilly", "name": "Alpha Chantilly", "grades": "K-9", "address": "4550 Walney Road, Chantilly, VA 20151", "city": "Chantilly", "state": "VA", "stateName": "Virginia", "lat": 38.8972, "lng": -77.4439, "status": "waitlist", "note": "", "price": "$65,000", "url": "https://alpha.school/chantilly/", "applyUrl": "https://alpha.school/application/?submission_campus=chantilly", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 20151"}, {"id": "alpha-plano", "name": "Alpha Plano", "grades": "K-8", "address": "7220 Independence Pkwy, Plano, TX 75025", "city": "Plano", "state": "TX", "stateName": "Texas", "lat": 33.0901, "lng": -96.74, "status": "waitlist", "note": "", "price": "$50,000", "url": "https://alpha.school/plano/", "applyUrl": "https://alpha.school/application/?submission_campus=plano", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 75025"}, {"id": "alpha-san-francisco", "name": "Alpha San Francisco", "grades": "K-12", "address": "3741 Buchanan St, San Francisco, CA 94123", "city": "San Francisco", "state": "CA", "stateName": "California", "lat": 37.802, "lng": -122.434, "status": "waitlist", "note": "", "price": "$75,000", "url": "https://alpha.school/san-francisco/", "applyUrl": "https://alpha.school/application/?submission_campus=san_francisco", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 94123"}, {"id": "alpha-dorado", "name": "Alpha Dorado", "grades": "K-8", "address": "PR-693 KM 13.8, Vega Alta, PR 00692", "city": "Vega Alta", "state": "PR", "stateName": "Puerto Rico", "lat": 18.4107, "lng": -66.3362, "status": "waitlist", "note": "", "price": "$50,000", "url": "https://alpha.school/dorado/", "applyUrl": "https://alpha.school/application/?submission_campus=dorado", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 00692"}, {"id": "alpha-houston-heights", "name": "Alpha Houston Heights", "grades": "K-8", "address": "Houston, TX", "city": "Houston", "state": "TX", "stateName": "Texas", "lat": 29.7857, "lng": -95.3888, "status": "open", "note": "", "price": "$40,000", "url": "https://alpha.school/houston/", "applyUrl": "https://alpha.school/application/?submission_campus=houston", "applyLabel": "Apply Now!", "geo": "city centroid"}, {"id": "alpha-bethesda", "name": "Alpha Bethesda", "grades": "K-8", "address": "Bethesda, Maryland", "city": "Bethesda", "state": "MD", "stateName": "Maryland", "lat": 38.9873, "lng": -77.1186, "status": "open", "note": "", "price": "$65,000", "url": "https://alpha.school/bethesda/", "applyUrl": "https://alpha.school/application/?submission_campus=bethesda", "applyLabel": "Apply Now!", "geo": "city centroid"}, {"id": "alpha-chicago", "name": "Alpha Chicago", "grades": "PK-8", "address": "350 East South Water Street, Chicago, IL 60601", "city": "Chicago", "state": "IL", "stateName": "Illinois", "lat": 41.8852, "lng": -87.6215, "status": "open", "note": "", "price": "$55,000", "url": "https://alpha.school/chicago/", "applyUrl": "https://alpha.school/application/?submission_campus=chicago", "applyLabel": "Apply Now!", "geo": "ZIP centroid 60601"}, {"id": "alpha-palo-alto", "name": "Alpha Palo Alto", "grades": "K-9", "address": "4260 El Camino Real, Palo Alto, CA 94306", "city": "Palo Alto", "state": "CA", "stateName": "California", "lat": 37.4162, "lng": -122.1309, "status": "waitlist", "note": "", "price": "$75,000", "url": "https://alpha.school/palo-alto/", "applyUrl": "https://alpha.school/application/?submission_campus=palo_alto", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 94306"}, {"id": "alpha-oklahoma-city", "name": "Alpha Oklahoma City", "grades": "K-10", "address": "Oklahoma City, OK", "city": "Oklahoma City", "state": "OK", "stateName": "Oklahoma", "lat": 35.4671, "lng": -97.5137, "status": "open", "note": "", "price": "$40,000", "url": "https://alpha.school/oklahoma-city/", "applyUrl": "https://alpha.school/application/?submission_campus=oklahoma_city", "applyLabel": "Apply Now!", "geo": "city centroid"}, {"id": "alpha-east-bay", "name": "Alpha East Bay", "grades": "K-9", "address": "5201 Park Blvd, Piedmont, CA 94611", "city": "Piedmont", "state": "CA", "stateName": "California", "lat": 37.8319, "lng": -122.2158, "status": "open", "note": "", "price": "$65,000", "url": "https://alpha.school/east-bay", "applyUrl": "https://alpha.school/application/?submission_campus=east_bay", "applyLabel": "Apply Now!", "geo": "ZIP centroid 94611"}, {"id": "alpha-atlanta", "name": "Alpha Atlanta", "grades": "K-8", "address": "1169 Canton St, Roswell, GA 30075", "city": "Roswell", "state": "GA", "stateName": "Georgia", "lat": 34.0527, "lng": -84.3916, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/atlanta/", "applyUrl": "https://alpha.school/application/?submission_campus=atlanta", "applyLabel": "Apply Now!", "geo": "ZIP centroid 30075"}, {"id": "alpha-santa-monica", "name": "Alpha Santa Monica", "grades": "K-10", "address": "1909 Colorado Ave, Santa Monica, CA 90404", "city": "Santa Monica", "state": "CA", "stateName": "California", "lat": 34.0266, "lng": -118.4738, "status": "open", "note": "", "price": "$65,000", "url": "https://alpha.school/santa-monica/", "applyUrl": "https://alpha.school/application/?submission_campus=santa_monica", "applyLabel": "Apply Now!", "geo": "ZIP centroid 90404"}, {"id": "alpha-kirkland", "name": "Alpha Kirkland", "grades": "K-12", "address": "620 5TH AVE S, Kirkland, WA 98033", "city": "Kirkland", "state": "WA", "stateName": "Washington", "lat": 47.676, "lng": -122.1936, "status": "open", "note": "", "price": "$55,000", "url": "https://alpha.school/kirkland/", "applyUrl": "https://alpha.school/application-fs/?submission_campus=kirkland", "applyLabel": "Apply Now!", "geo": "ZIP centroid 98033"}, {"id": "alpha-boston", "name": "Alpha Boston", "grades": "K-8", "address": "300 Cambridge Street, Boston, MA", "city": "Boston", "state": "MA", "stateName": "Massachusetts", "lat": 42.3637, "lng": -71.0669, "status": "waitlist", "note": "", "price": "$65,000", "url": "https://alpha.school/boston/", "applyUrl": "https://alpha.school/application-fs/?submission_campus=boston", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 02114"}, {"id": "alpha-southlake", "name": "Alpha Southlake", "grades": "K-8", "address": "1750 Rufe Snow Dr, Keller, TX 76248", "city": "Keller", "state": "TX", "stateName": "Texas", "lat": 32.9291, "lng": -97.2262, "status": "open", "note": "", "price": "$40,000", "url": "https://alpha.school/southlake/", "applyUrl": "https://alpha.school/application/?submission_campus=southlake", "applyLabel": "Apply Now!", "geo": "ZIP centroid 76248"}, {"id": "alpha-south-bay-la", "name": "Alpha South Bay LA", "grades": "K-8", "address": "5401 Beethoven Street, Los Angeles, CA, 90066", "city": "Los Angeles", "state": "CA", "stateName": "California", "lat": 34.002, "lng": -118.4307, "status": "open", "note": "", "price": "$65,000", "url": "https://alpha.school/south-bay-la/", "applyUrl": "https://alpha.school/application/?submission_campus=south_bay", "applyLabel": "Apply Now!", "geo": "ZIP centroid 90066"}, {"id": "alpha-park-city", "name": "Alpha Park City", "grades": "K-8", "address": "3770 UT-224, Park City, UT 84060", "city": "Park City", "state": "UT", "stateName": "Utah", "lat": 40.6444, "lng": -111.5066, "status": "waitlist", "note": "", "price": "$50,000", "url": "https://alpha.school/park-city/", "applyUrl": "https://alpha.school/application/?submission_campus=park_city", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 84060"}, {"id": "alpha-miami-beach", "name": "Alpha Miami Beach", "grades": "PK-8", "address": "1021 Biarritz Drive, Miami, FL 33141", "city": "Miami", "state": "FL", "stateName": "Florida", "lat": 25.851, "lng": -80.1386, "status": "open", "note": "", "price": "$65,000", "url": "https://alpha.school/miami-beach/", "applyUrl": "https://alpha.school/application/?submission_campus=miami_beach", "applyLabel": "Apply Now!", "geo": "ZIP centroid 33141"}, {"id": "alpha-lake-travis", "name": "Alpha Lake Travis", "grades": "K-8", "address": "4402 Hudson Bend Rd, Austin, TX 78734", "city": "Austin", "state": "TX", "stateName": "Texas", "lat": 30.3801, "lng": -97.9478, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/lake-travis/", "applyUrl": "https://alpha.school/application/?submission_campus=lake_travis", "applyLabel": "Apply Now!", "geo": "ZIP centroid 78734"}, {"id": "alpha-carrollton", "name": "Alpha Carrollton", "grades": "K-8", "address": "2205 E Hebron Pkwy, Carrollton, TX", "city": "Carrollton", "state": "TX", "stateName": "Texas", "lat": 32.9894, "lng": -96.8999, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/carrollton/", "applyUrl": "https://alpha.school/application/?submission_campus=carrollton", "applyLabel": "Apply Now!", "geo": "city centroid"}, {"id": "alpha-nashville", "name": "Alpha Nashville", "grades": "K-8", "address": "1912 21st Ave S, Nashville, TN 37212", "city": "Nashville", "state": "TN", "stateName": "Tennessee", "lat": 36.1338, "lng": -86.8017, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/nashville/", "applyUrl": "https://alpha.school/application/?submission_campus=nashville", "applyLabel": "Apply Now!", "geo": "ZIP centroid 37212"}, {"id": "alpha-highland-park", "name": "Alpha Highland Park", "grades": "K-8", "address": "4152 Cole Ave Dallas, TX 75204", "city": "Dallas", "state": "TX", "stateName": "Texas", "lat": 32.8022, "lng": -96.7889, "status": "open", "note": "", "price": "$60,000", "url": "https://alpha.school/highland-park/", "applyUrl": "https://alpha.school/application/?submission_campus=highland_park", "applyLabel": "Apply Now!", "geo": "ZIP centroid 75204"}, {"id": "alpha-denver", "name": "Alpha Denver", "grades": "K-8", "address": "7550 Park Meadows Dr., Lone Tree, Colorado 80124", "city": "Lone Tree", "state": "CO", "stateName": "Colorado", "lat": 39.5328, "lng": -104.8912, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/denver/", "applyUrl": "https://alpha.school/application/?submission_campus=denver", "applyLabel": "Apply Now!", "geo": "ZIP centroid 80124"}, {"id": "alpha-boca-raton", "name": "Alpha Boca Raton", "grades": "K-8", "address": "2200 NW 5th Ave, Boca Raton, FL 33431", "city": "Boca Raton", "state": "FL", "stateName": "Florida", "lat": 26.3746, "lng": -80.1066, "status": "waitlist", "note": "", "price": "$55,000", "url": "https://alpha.school/boca-raton/", "applyUrl": "https://alpha.school/application-fs/?submission_campus=boca_raton", "applyLabel": "Apply for waitlist", "geo": "ZIP centroid 33431"}, {"id": "alpha-malibu", "name": "Alpha Malibu", "grades": "K-8", "address": "3504 Las Flores Canyon Rd, Malibu, CA 90265", "city": "Malibu", "state": "CA", "stateName": "California", "lat": 34.0702, "lng": -118.851, "status": "open", "note": "", "price": "$60,000", "url": "https://alpha.school/malibu/", "applyUrl": "https://alpha.school/application/?submission_campus=malibu", "applyLabel": "Apply Now!", "geo": "ZIP centroid 90265"}, {"id": "alpha-lexington", "name": "Alpha Lexington", "grades": "K-8", "address": "Boston metro suburbs, MA", "city": "Lexington", "state": "MA", "stateName": "Massachusetts", "lat": 42.443, "lng": -71.229, "status": "proposed", "note": "", "price": "$65,000", "url": "https://alpha.school/boston-suburbs/", "applyUrl": "https://alpha.school/boston-suburbs/", "applyLabel": "Stay In-the-Know", "geo": "town centroid (approx.)"}, {"id": "alpha-la-jolla", "name": "Alpha La Jolla", "grades": "K-8", "address": "7979 Ivanhoe Ave, La Jolla, CA 92037", "city": "La Jolla", "state": "CA", "stateName": "California", "lat": 32.8546, "lng": -117.2518, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/la-jolla/", "applyUrl": "https://alpha.school/application/?submission_campus=la_jolla", "applyLabel": "Apply Now!", "geo": "ZIP centroid 92037"}, {"id": "alpha-tulsa", "name": "Alpha Tulsa", "grades": "K-8", "address": "Tulsa, OK", "city": "Tulsa", "state": "OK", "stateName": "Oklahoma", "lat": 36.1279, "lng": -95.9023, "status": "waitlist", "note": "", "price": "$40,000", "url": "https://alpha.school/tulsa/", "applyUrl": "https://alpha.school/application/?submission_campus=tulsa", "applyLabel": "Apply for waitlist", "geo": "city centroid"}, {"id": "alpha-san-juan", "name": "Alpha San Juan", "grades": "K-8", "address": "San Juan PR", "city": "San Juan", "state": "PR", "stateName": "Puerto Rico", "lat": 18.4046, "lng": -66.0637, "status": "open", "note": "", "price": "Contact for pricing", "url": "https://alpha.school/san-juan/", "applyUrl": "https://alpha.school/application/?submission_campus=san_juan", "applyLabel": "Apply Now!", "geo": "city centroid"}, {"id": "alpha-anywhere-center-founders", "name": "Alpha Anywhere Center – Founders", "grades": "9-12", "address": "180 Maiden Ln, New York, NY 10038", "city": "New York", "state": "NY", "stateName": "New York", "lat": 40.7093, "lng": -74.0029, "status": "open", "note": "", "price": "Contact for pricing", "url": "https://alpha.school/alpha-anywhere-center-founders/", "applyUrl": "https://alpha.school/application/?submission_campus=alpha_anywhere_center_founders", "applyLabel": "Apply Now!", "geo": "ZIP centroid 10038"}, {"id": "alpha-franklin", "name": "Alpha Franklin", "grades": "K-8", "address": "Franklin, Tennessee, United States", "city": "Franklin", "state": "TN", "stateName": "Tennessee", "lat": 35.914, "lng": -86.8522, "status": "open", "note": "", "price": "$50,000", "url": "https://alpha.school/franklin/", "applyUrl": "https://alpha.school/application-fs/?submission_campus=franklin", "applyLabel": "Apply Now!", "geo": "city centroid"}, {"id": "alpha-jamaica-plain", "name": "Alpha Jamaica Plain", "grades": "K-8", "address": "3815 Washington St, Jamaica Plain, MA 02130", "city": "Jamaica Plain", "state": "MA", "stateName": "Massachusetts", "lat": 42.3082, "lng": -71.1135, "status": "open", "note": "", "price": "$60,000", "url": "https://alpha.school/jamaica-plain/", "applyUrl": "https://alpha.school/application/?submission_campus=jamaica_plain", "applyLabel": "Apply Now!", "geo": "ZIP centroid 02130"}, {"id": "alpha-greenwich-armonk", "name": "Alpha Greenwich Armonk", "grades": "K-8", "address": "355 Main Street, Suite 200, Armonk, NY 10504", "city": "Armonk", "state": "NY", "stateName": "New York", "lat": 41.1285, "lng": -73.7075, "status": "open", "note": "Homeschool support center", "price": "$65,000/yr total (see campus page)", "url": "https://alpha.school/greenwich/", "applyUrl": "https://alpha.school/application/?submission_campus=greenwich_armonk", "applyLabel": "Apply Now!", "geo": "ZIP centroid 10504"}, {"id": "alpha-austin-founders", "name": "Alpha Austin – Founders", "grades": "9-12", "address": "201 Colorado St, Austin, TX 78701", "city": "Austin", "state": "TX", "stateName": "Texas", "lat": 30.2706, "lng": -97.7426, "status": "open", "note": "", "price": "Contact for pricing", "url": "https://alpha.school/austin-founders/", "applyUrl": "https://alpha.school/application/?submission_campus=austin_founders", "applyLabel": "Apply Now!", "geo": "ZIP centroid 78701"}];
+</script>
+<script>
+const C=window.ALPHA_CAMPUSES, TOUR='https://alpha.school/upcoming-events/';
+const LBL={open:'Now enrolling',waitlist:'2026–27 Waitlist',proposed:'Proposed'};
+const $=s=>document.querySelector(s);
+$('#total').textContent=C.length;
+['all','open','waitlist'].forEach(k=>$('#n-'+k).textContent=k==='all'?C.length:C.filter(c=>c.status===k).length);
+const mobile=matchMedia('(max-width:900px)').matches;
+const map=L.map('map',{zoomControl:false,scrollWheelZoom:true,worldCopyJump:true}).setView([33,-92],4);
+L.control.zoom({position:'bottomright'}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',className:'tiles'}).addTo(map);
+const cluster=L.markerClusterGroup({showCoverageOnHover:false,maxClusterRadius:48,spiderfyOnMaxZoom:true,
+  iconCreateFunction:c=>{const n=c.getChildCount(),s=n<5?38:n<15?46:56;return L.divIcon({html:'<div class="cl" style="width:'+s+'px;height:'+s+'px">'+n+'</div>',className:'',iconSize:[s,s]})}});
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+function card(c){return `<div class="pc"><span class="badge ${c.status}">${LBL[c.status]}</span>
+<h3>${esc(c.name)}</h3><div class="m">${esc(c.city)}, ${c.state} · Grades ${esc(c.grades)}${c.note?' · '+esc(c.note):''}</div>
+<div class="meta"><div><span>Address</span><b style="font-weight:500;text-align:right">${esc(c.address)}</b></div>${c.price?`<div><span>${c.note?'Program fees':'Tuition'}</span><b style="font-weight:500">${esc(c.price)}</b></div>`:''}</div>
+<div class="b"><a class="btn" href="${c.url}" target="_blank" rel="noopener">Visit campus page</a>
+<a class="btn ghost" href="${TOUR}" target="_blank" rel="noopener">Book a tour / info session</a></div>
+<div class="lk"><a href="${c.applyUrl}" target="_blank" rel="noopener">${esc(c.applyLabel.replace('!',''))} →</a></div></div>`}
+const markers={};
+C.forEach(c=>{const m=L.marker([c.lat,c.lng],{icon:L.divIcon({className:'',html:'<div class="pin '+c.status+'" id="pin-'+c.id+'"></div>',iconSize:[18,18]}),title:c.name,riseOnHover:true});
+  m.bindPopup(card(c),{maxWidth:320,autoPanPaddingTopLeft:[30,90],autoPanPaddingBottomRight:[30,30]});m.campus=c;markers[c.id]=m;});
+let filter='all',me=null;
+function apply(){cluster.clearLayers();cluster.addLayers(C.filter(c=>filter==='all'||c.status===filter).map(c=>markers[c.id]));sync();}
+map.addLayer(cluster);
+const R=6371e3/1609.34;function dist(a,b,c,d){const r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+function sync(){const b=map.getBounds();let v=C.filter(c=>(filter==='all'||c.status===filter)&&b.contains([c.lat,c.lng]));
+  if(me)v.forEach(c=>c._d=dist(me[0],me[1],c.lat,c.lng));
+  v.sort(me?(a,b)=>a._d-b._d:(a,b)=>a.stateName.localeCompare(b.stateName)||a.name.localeCompare(b.name));
+  $('#inview').textContent=v.length;$('#inviewl').textContent=v.length===1?'campus':'campuses';
+  $('#items').innerHTML=v.length?v.map(c=>`<div class="item" data-id="${c.id}" tabindex="0"><div><div class="t">${esc(c.name)}</div><div class="s">${esc(c.city)}, ${c.state} · ${esc(c.grades)}</div></div>
+   <div class="r"><span class="badge ${c.status}">${LBL[c.status]}</span>${me?`<span class="d">${Math.round(c._d)} mi</span>`:''}</div></div>`).join('')
+   :`<div class="empty">No campuses in this area yet.<br><br><a href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to your city →</a><br><a href="https://alphaanywhere.co/">Or try Alpha Anywhere (virtual) →</a></div>`;}
+map.on('moveend',sync);
+function focusOn(m,anim){const z=Math.max(map.getZoom(),13);
+  map.once('moveend',()=>cluster.zoomToShowLayer(m,()=>m.openPopup()));
+  if(anim)map.flyTo(m.getLatLng(),z,{duration:.8});else map.setView(m.getLatLng(),z,{animate:false});}
+const items=$('#items');
+items.addEventListener('click',e=>{const it=e.target.closest('.item');if(!it)return;const m=markers[it.dataset.id];
+  focusOn(m,true);
+  if(mobile)$('.mapwrap').scrollIntoView({behavior:'smooth'});});
+items.addEventListener('mouseover',e=>{const it=e.target.closest('.item');document.querySelectorAll('.pin.hl').forEach(p=>p.classList.remove('hl'));if(it){const p=document.getElementById('pin-'+it.dataset.id);p&&p.classList.add('hl')}});
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{filter=b.dataset.f;document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));apply();});
+$('#reset').onclick=()=>map.flyToBounds(L.latLngBounds(C.filter(c=>c.state!=='PR').map(c=>[c.lat,c.lng])),{padding:[30,30]});
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',3500)}
+let meMarker;
+$('#locate').onclick=()=>{if(!navigator.geolocation)return toast('Location isn’t available in this browser.');toast('Finding you…');
+ navigator.geolocation.getCurrentPosition(p=>{me=[p.coords.latitude,p.coords.longitude];if(meMarker)meMarker.remove();
+  meMarker=L.marker(me,{icon:L.divIcon({className:'',html:'<div class="me"></div>',iconSize:[16,16]}),zIndexOffset:1000}).addTo(map);
+  const near=C.map(c=>({c,d:dist(me[0],me[1],c.lat,c.lng)})).sort((a,b)=>a.d-b.d).slice(0,3);
+  map.flyToBounds(L.latLngBounds([me,...near.map(n=>[n.c.lat,n.c.lng])]),{padding:[50,50],maxZoom:11});
+  toast('Nearest: '+near[0].c.name+' · '+Math.round(near[0].d)+' mi');},
+ ()=>toast('We couldn’t get your location. Try zooming the map instead.'),{timeout:8000});};
+apply();
+if(!mobile)map.fitBounds(L.latLngBounds(C.filter(c=>c.state!=='PR').map(c=>[c.lat,c.lng])),{padding:[30,30]});
+else map.setView([36,-96],3);
+const q=new URLSearchParams(location.search);if(q.get('focus')){const m=markers[q.get('focus')];if(m)setTimeout(()=>focusOn(m,false),600)}
+</script>
+</body></html>
