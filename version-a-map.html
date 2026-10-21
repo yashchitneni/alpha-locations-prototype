@@ -2,144 +2,202 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Locations · Version A (Map-first) · Alpha School prototype</title>
-<link rel="preconnect" href="https://rsms.me/"><link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
 <style>
-:root{--bg:#fff;--fg:#0a0a0a;--muted:#6b6b6b;--line:#ececec;--soft:#f6f6f6;--accent:#1f4bff;--accent-soft:#eef2ff;--radius:14px;
---font:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+/* Alpha brand tokens: trilogy-group/alpha-website-playbook spec/brand-visual.json (Alpha School Brand Guidelines) */
+:root{
+--navy:#110068;--medium:#0D4AD1;--light:#418BE9;--sky:#00BCFF;--white:#FFFFFF;--black:#000000;
+--pale:#C8DBF4;--stat:#47C4E6;
+--grad-primary:linear-gradient(160deg,#110068 0%,#0D4AD1 100%);
+--grad-deep:linear-gradient(160deg,#110068 0%,#418BE9 100%);
+--ink:#000000;--ink-2:#3a3378;--line:#dfe6f3;--soft:#f3f7fd;
+--radius:24px;--font:"Montserrat",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+--shadow-sm:0 2px 4px -1px rgba(17,0,104,.06),0 1px 2px 0 rgba(17,0,104,.04);
+--shadow-lg:0 18px 32px -8px rgba(17,0,104,.14),0 4px 8px -2px rgba(17,0,104,.05)}
 *{box-sizing:border-box}html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background:#fff;color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
-.nav-in{max-width:1280px;margin:0 auto;height:64px;padding:0 28px;display:flex;align-items:center;gap:32px}
-.logo{font-weight:800;font-size:20px;letter-spacing:-.03em;text-decoration:none}
-.logo span{color:var(--accent)}
-.nav-links{display:flex;gap:28px;margin-left:auto;align-items:center}
-.nav-links a{text-decoration:none;font-size:14px;color:#333}
-.nav-links a:hover{color:var(--fg)}
-.nav-links a.active{color:var(--fg);font-weight:600;border-bottom:2px solid var(--fg);padding-bottom:3px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font:600 14px/1 var(--font);text-decoration:none;cursor:pointer;border:1px solid var(--fg);background:var(--fg);color:#fff;white-space:nowrap;transition:transform .15s,background .15s}
-.btn:hover{transform:translateY(-1px)}
-.btn.ghost{background:#fff;color:var(--fg);border-color:#d6d6d6}
-.btn.ghost:hover{border-color:var(--fg)}
-.btn.accent{background:var(--accent);border-color:var(--accent)}
-.btn.sm{height:36px;padding:0 14px;font-size:13px}
-.nav .btn{height:38px;padding:0 18px}
-.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap}
+h1,h2{font-family:var(--font);text-transform:uppercase;letter-spacing:normal;margin:0}
+h1{font-weight:900;line-height:.95}
+h2{font-weight:800;line-height:1;color:var(--navy)}
+h3{font-weight:700;letter-spacing:normal;color:var(--navy)}
+.kicker{color:var(--sky)}
+/* Header: brand gradient, white canonical logo, white bold nav, outlined pill CTA (live site + Matt's rebuild pattern) */
+.nav{position:sticky;top:0;z-index:1000;background:var(--navy)}
+.nav-in{max-width:1280px;margin:0 auto;height:76px;padding:0 28px;display:flex;align-items:center;gap:32px}
+.logo{display:inline-flex;align-items:center;padding:6px 0}
+.logo img{height:44px;width:auto;display:block}
+.nav-links{display:flex;gap:6px;margin-left:auto;align-items:center}
+.nav-links a{text-decoration:none;font-size:14px;font-weight:700;color:#fff;padding:8px 14px;border-radius:999px;transition:background .15s}
+.nav-links a:hover{background:rgba(255,255,255,.1)}
+.nav-links a.active{background:rgba(255,255,255,.14)}
+.nav-links a.cta{border:1.5px solid #fff;padding:9px 22px;margin-left:12px}
+.nav-links a.cta:hover{background:#fff;color:var(--navy)}
+/* Buttons: pill, Montserrat 700 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:999px;font:700 14px/1 var(--font);text-decoration:none;cursor:pointer;border:1.5px solid var(--medium);background:var(--medium);color:#fff;white-space:nowrap;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s;box-shadow:var(--shadow-sm)}
+.btn:hover{background:var(--navy);border-color:var(--navy);transform:translateY(-1px)}
+.btn.ghost{background:#fff;color:var(--navy);border-color:var(--navy);box-shadow:none}
+.btn.ghost:hover{background:var(--navy);color:#fff}
+.btn.inverse{background:#fff;color:var(--navy);border-color:#fff}
+.btn.inverse:hover{background:var(--pale);border-color:var(--pale)}
+.btn.outline-w{background:transparent;color:#fff;border-color:#fff;box-shadow:none}
+.btn.outline-w:hover{background:#fff;color:var(--navy)}
+.btn.sm{height:38px;padding:0 16px;font-size:13px}
+/* Status badges */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px;white-space:nowrap}
 .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.badge.open{background:var(--accent-soft);color:var(--accent)}
-.badge.waitlist{background:#f3f3f3;color:#333}
-.badge.proposed{background:#fff;color:var(--muted);border:1px dashed #cfcfcf}
-.eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.foot{border-top:1px solid var(--line);margin-top:96px}
-.foot-in{max-width:1280px;margin:0 auto;padding:40px 28px;display:flex;flex-wrap:wrap;gap:16px 40px;align-items:center;color:var(--muted);font-size:14px}
-.foot-in strong{color:var(--fg)}
-.foot-in a{text-decoration:none}
-.proto{position:fixed;left:16px;bottom:16px;z-index:2000;font-size:12px;background:var(--fg);color:#fff;padding:6px 12px;border-radius:999px;opacity:.85}
-.proto a{color:#fff}
-@media (max-width:820px){.nav-in{padding:0 18px;gap:16px}.nav-links .hide-m{display:none}.nav-links{gap:18px}}
-.nav-links a.btn{color:#fff}.nav-links a.btn:hover{color:#fff}
+.badge.open{background:var(--medium);color:#fff}
+.badge.waitlist{background:var(--pale);color:var(--navy)}
+.badge.proposed{background:#fff;color:var(--navy);border:1.5px dashed var(--navy)}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--medium)}
+/* Brand hero field: signature gradient + faceted low-poly lines + wing-edge diagonal */
+.field{position:relative;background:var(--grad-primary);color:#fff;overflow:hidden}
+.field .eyebrow{color:var(--sky)}
+.field::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.11;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' viewBox='0 0 1200 600' fill='none' stroke='white' stroke-width='1.2'%3E%3Cpath d='M620 0 L760 180 L980 120 L1200 260 M760 180 L700 420 L940 380 L1200 520 M980 120 L940 380 M700 420 L860 600 M940 380 L1080 600 M1200 260 L940 380 M760 180 L560 300 L700 420 M560 300 L480 600 M1100 0 L980 120'/%3E%3C/svg%3E");
+background-size:cover;background-position:right center}
+.field.edge{clip-path:polygon(0 0,100% 0,100% calc(100% - 64px),0 100%)}
+.stat{color:var(--stat);font-weight:900;line-height:1}
+/* Footer: navy, white canonical logo, positioning line */
+.foot{background:var(--navy);color:#fff;margin-top:120px}
+.foot-in{max-width:1280px;margin:0 auto;padding:56px 28px 32px}
+.foot-top{display:grid;grid-template-columns:1.1fr 2fr;gap:48px;align-items:start}
+.foot-top img{height:52px;width:auto}
+.foot-line{font-weight:900;text-transform:uppercase;font-size:clamp(22px,2.6vw,34px);line-height:.98;margin:0}
+.foot-line span{color:var(--sky)}
+.foot-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
+.foot-cols b{display:block;font-size:16px;margin-bottom:6px}
+.foot-cols b::after{content:"";display:block;width:48px;height:1px;background:rgba(255,255,255,.4);margin-top:10px}
+.foot-cols a{display:block;text-decoration:none;font-size:14px;padding:5px 0;color:#fff}
+.foot-cols a:hover{opacity:.75}
+.foot-bot{border-top:1px solid rgba(255,255,255,.15);margin-top:40px;padding-top:20px;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.proto{position:fixed;left:16px;bottom:16px;z-index:2000;font-size:12px;font-weight:700;background:var(--navy);color:#fff;padding:7px 14px;border-radius:999px;box-shadow:var(--shadow-lg)}
+.proto a{color:var(--sky)}
+@media (max-width:900px){.nav-in{padding:0 18px;gap:12px;height:64px}.logo img{height:36px}.nav-links .hide-m{display:none}.nav-links a.cta{margin-left:4px;padding:8px 16px}
+ .foot-top{grid-template-columns:1fr;gap:24px}.foot-cols{grid-template-columns:1fr 1fr}.foot-in{padding:44px 18px 28px}.field.edge{clip-path:polygon(0 0,100% 0,100% calc(100% - 32px),0 100%)}}
 
-.hero{max-width:1280px;margin:0 auto;padding:40px 28px 22px;display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
-.hero h1{font-size:clamp(32px,4.4vw,54px);line-height:1.02;letter-spacing:-.035em;margin:10px 0 12px;font-weight:700}
-.hero p{margin:0;color:var(--muted);font-size:18px;max-width:560px}
-.hero-actions{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
-.toolbar{max-width:1280px;margin:0 auto;padding:0 28px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.chip{flex-shrink:0;white-space:nowrap;height:36px;padding:0 14px;border-radius:999px;border:1px solid #dcdcdc;background:#fff;font:500 13px var(--font);cursor:pointer;color:#333}
-.chip[aria-pressed=true]{background:var(--fg);color:#fff;border-color:var(--fg)}
-.chip .n{opacity:.55;margin-left:4px}
-.legend{margin-left:auto;display:flex;gap:16px;font-size:13px;color:var(--muted)}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
-.stage{max-width:1280px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:380px 1fr;gap:20px;height:calc(100vh - 64px - 40px);min-height:560px;max-height:820px}
-.list{border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden}
-.list-h{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:14px}
-.list-h b{font-size:15px}
-.list-h button{border:0;background:none;color:var(--accent);font:600 13px var(--font);cursor:pointer}
+.hero{padding:56px 0 104px}
+.hero-in{max-width:1280px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:end;position:relative}
+.hero h1{font-size:clamp(44px,6.2vw,84px);margin:14px 0 22px}
+.hero p{margin:0 0 26px;font-size:18px;max-width:560px;color:#fff}
+.commit{list-style:none;padding:0;margin:0 0 30px;display:grid;gap:8px;font-weight:700;font-size:16px}
+.commit li{display:flex;gap:10px;align-items:center}
+.commit li::before{content:"";width:18px;height:2px;background:var(--sky)}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;border-top:1px solid rgba(255,255,255,.2);padding-top:22px}
+.stats .stat{font-size:clamp(40px,4.6vw,64px)}
+.stats span{display:block;font-size:13px;font-weight:700;margin-top:6px;color:#fff}
+.toolbar{max-width:1280px;margin:-40px auto 0;padding:0 28px 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:relative;z-index:5}
+.chip{flex-shrink:0;white-space:nowrap;height:40px;padding:0 16px;border-radius:999px;border:1.5px solid var(--navy);background:#fff;font:700 13px var(--font);cursor:pointer;color:var(--navy)}
+.chip[aria-pressed=true]{background:var(--navy);color:#fff}
+.chip .n{opacity:.6;margin-left:5px}
+.legend{margin-left:auto;display:flex;gap:16px;font-size:13px;font-weight:500;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-2px}
+.stage{max-width:1280px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:380px 1fr;gap:20px;height:calc(100vh - 140px);min-height:560px;max-height:780px}
+.list{border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden;background:#fff;box-shadow:var(--shadow-sm)}
+.list-h{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--navy);font-weight:500}
+.list-h b{font-size:16px;font-weight:800}
+.list-h button{border:0;background:none;color:var(--medium);font:700 13px var(--font);cursor:pointer}
 .items{overflow:auto;flex:1}
-.item{display:flex;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s}
+.item{display:flex;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s}
 .item:hover,.item.hl{background:var(--soft)}
-.item .t{font-weight:600;font-size:15px;letter-spacing:-.01em}
-.item .s{font-size:13px;color:var(--muted)}
+.item .t{font-weight:700;font-size:15px;color:var(--navy)}
+.item .s{font-size:13px;color:var(--ink-2)}
 .item .r{margin-left:auto;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.item .d{font-size:12px;color:var(--muted)}
-.empty{padding:28px 18px;color:var(--muted);font-size:14px}
-.empty a{color:var(--accent);font-weight:600}
-#map{border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;background:#f2f2f0}
+.item .d{font-size:12px;font-weight:700;color:var(--navy)}
+.empty{padding:28px 20px;color:var(--navy);font-size:14px;background:var(--pale);margin:16px;border-radius:16px}
+.empty a{color:var(--navy);font-weight:700}
+#map{border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;background:#e9f0fb;box-shadow:var(--shadow-sm)}
 .leaflet-container{font-family:var(--font)}
-.tiles{filter:grayscale(1) contrast(.9) brightness(1.06)}
-.pin{width:18px;height:18px;border-radius:50%;background:var(--fg);border:3px solid #fff;box-shadow:0 0 0 1.5px var(--fg),0 4px 10px rgba(0,0,0,.25);transition:transform .15s}
-.pin.open{background:var(--accent);box-shadow:0 0 0 1.5px var(--accent),0 4px 10px rgba(31,75,255,.35)}
-.pin.waitlist{background:#fff;box-shadow:0 0 0 2px var(--fg),0 4px 10px rgba(0,0,0,.2)}
-.pin.proposed{background:#fff;border:2px dashed #999;box-shadow:none}
+.leaflet-tile-pane{filter:grayscale(1) sepia(.5) hue-rotate(185deg) saturate(2.1) brightness(1.04) contrast(.88)}
+.pin{width:20px;height:20px;border-radius:50%;background:var(--medium);border:3px solid #fff;box-shadow:0 0 0 1.5px var(--medium),0 4px 10px rgba(13,74,209,.35);transition:transform .15s}
+.pin.waitlist{background:#fff;border:4px solid var(--navy);box-shadow:0 4px 10px rgba(17,0,104,.25)}
+.pin.proposed{background:var(--pale);border:2px dashed var(--navy);box-shadow:none}
 .pin.hl{transform:scale(1.5)}
-.cl{display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--fg);color:#fff;font:700 13px var(--font);border:4px solid rgba(255,255,255,.9);box-shadow:0 6px 18px rgba(0,0,0,.25)}
-.me{width:16px;height:16px;border-radius:50%;background:#1f4bff;border:3px solid #fff;box-shadow:0 0 0 8px rgba(31,75,255,.18)}
-.leaflet-popup-content-wrapper{border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.18);padding:4px}
-.leaflet-popup-content{margin:16px 18px;width:270px!important}
-.pc h3{margin:8px 0 2px;font-size:19px;letter-spacing:-.02em}
-.pc .m{color:var(--muted);font-size:13px;margin-bottom:12px}
-.pc .meta{font-size:13px;color:#333;border-top:1px solid var(--line);padding-top:10px;margin-bottom:14px}
-.pc .meta div{display:flex;justify-content:space-between;gap:10px}
-.pc .meta span{color:var(--muted)}
+.cl{display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--navy);color:#fff;font:800 14px var(--font);border:4px solid rgba(255,255,255,.95);box-shadow:0 0 0 4px rgba(0,188,255,.35),0 8px 18px rgba(17,0,104,.3)}
+.me{width:18px;height:18px;border-radius:50%;background:var(--medium);border:3px solid #fff;box-shadow:0 0 0 9px rgba(13,74,209,.18)}
+.leaflet-popup-content-wrapper{border-radius:20px;box-shadow:var(--shadow-lg);padding:0;overflow:hidden}
+.leaflet-popup-content{margin:0;width:290px!important}
+.pc{padding:18px 20px 16px}
+.pc .bar{height:6px;background:var(--grad-primary)}
+.pc h3{margin:10px 0 2px;font-size:20px}
+.pc .m{color:var(--ink-2);font-size:13px;margin-bottom:12px}
+.pc .meta{font-size:13px;color:var(--ink);border-top:1px solid var(--line);padding-top:10px;margin-bottom:14px}
+.pc .meta div{display:flex;justify-content:space-between;gap:10px;margin-bottom:3px}
+.pc .meta span{color:var(--ink-2)}
 .pc .b{display:flex;flex-direction:column;gap:8px}
-.pc .btn{height:40px;width:100%}
-.pc .lk{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
-.leaflet-popup-content a.btn{color:#fff}.leaflet-popup-content a.btn.ghost{color:var(--fg)}
-.note{max-width:1280px;margin:14px auto 0;padding:0 28px;font-size:12px;color:var(--muted)}
-.toast{position:absolute;z-index:999;left:50%;top:14px;transform:translateX(-50%);background:var(--fg);color:#fff;font-size:13px;padding:8px 14px;border-radius:999px;display:none}
+.pc .btn{height:42px;width:100%}
+.pc .lk{font-size:12px;text-align:center;margin-top:10px}
+.pc .lk a{color:var(--medium);font-weight:700}
+.leaflet-popup-content a.btn{color:#fff}.leaflet-popup-content a.btn.ghost{color:var(--navy)}.leaflet-popup-content a.btn.ghost:hover{color:#fff}
+.note{max-width:1280px;margin:14px auto 0;padding:0 28px;font-size:12px;color:var(--ink-2)}
+.toast{position:absolute;z-index:999;left:50%;top:14px;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:13px;font-weight:700;padding:9px 16px;border-radius:999px;display:none}
 .mapwrap{position:relative}.mapwrap #map{position:absolute;inset:0}
-.view-toggle{display:none}
+.explore{position:absolute;z-index:900;right:14px;top:14px;height:38px;padding:0 16px;border-radius:999px;border:0;background:var(--navy);color:#fff;font:800 12px var(--font);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:var(--shadow-lg)}
+.explore[aria-pressed=true]{background:#fff;color:var(--navy);box-shadow:0 0 0 1.5px var(--navy)}
 @media (max-width:900px){
- .hero{padding:24px 18px 14px;gap:16px}.hero h1{font-size:34px;margin:6px 0 8px}.hero p{font-size:15px}.hero-actions{margin-left:0;width:100%;flex-wrap:nowrap;gap:8px}.hero-actions .btn{flex:1;height:42px;padding:0 12px;font-size:13px}
- .toolbar{padding:0 18px 12px;flex-wrap:nowrap;overflow-x:auto}.legend{display:none}
- .stage{grid-template-columns:1fr;grid-template-rows:56vh auto;height:auto;max-height:none;padding:0 18px}
- .mapwrap{order:1;height:56vh}.list{order:2;max-height:none}.items{max-height:none}
+ .hero{padding:32px 0 64px}.hero-in{grid-template-columns:1fr;gap:26px;padding:0 18px}.hero h1{font-size:44px;margin:10px 0 16px}.hero p{font-size:15px;margin-bottom:18px}
+ .commit{font-size:14px;margin-bottom:20px}.hero-actions{flex-wrap:nowrap}.hero-actions .btn{flex:1;height:44px;padding:0 12px;font-size:13px}
+ .stats .stat{font-size:34px}.stats span{font-size:12px}
+ .toolbar{margin-top:-16px;padding:0 18px 12px;flex-wrap:nowrap;overflow-x:auto}.legend{display:none}
+ .stage{grid-template-columns:1fr;grid-template-rows:60vh auto;height:auto;max-height:none;padding:0 18px}
+ .mapwrap{order:1;height:60vh}.list{order:2}
  .note{padding:0 18px}
 }
 </style></head>
 <body>
 <header class="nav"><div class="nav-in">
-  <a class="logo" href="index.html">alpha<span>.</span></a>
-  <nav class="nav-links">
-    <a class="hide-m" href="https://alpha.school/the-program/#love">Love School</a>
-    <a class="hide-m" href="https://alpha.school/the-program/#learn">Learn 2x in 2hrs</a>
+  <a class="logo" href="index.html" aria-label="Alpha School home"><img src="assets/alpha-school-logo-white.svg" alt="Alpha School" width="121" height="44"></a>
+  <nav class="nav-links" aria-label="Primary">
+    <a class="hide-m" href="https://alpha.school/the-program/">The Program</a>
     <a class="hide-m" href="https://alpha.school/admission/">Admission</a>
     <a class="active" href="#" aria-current="page">Locations</a>
-    <a class="btn" href="https://alpha.school/admission/">Apply</a>
+    <a class="hide-m" href="https://alpha.school/upcoming-events/">Events</a>
+    <a class="cta" href="https://alpha.school/admission/">Apply</a>
   </nav>
 </div></header>
 
-<section class="hero">
-  <div>
-    <div class="eyebrow">Locations</div>
-    <h1>Find your Alpha campus.</h1>
-    <p><span id="total"></span> campuses and counting. Love School. Learn 2x in 2hrs. Zoom in or tap a pin to see more.</p>
-  </div>
-  <div class="hero-actions">
-    <button class="btn ghost" id="locate">◎ Use my location</button>
-    <a class="btn" href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to your city</a>
+<section class="hero field edge">
+  <div class="hero-in">
+    <div>
+      <div class="eyebrow">Locations</div>
+      <h1>See Alpha<br><span class="kicker">on the map.</span></h1>
+      <ul class="commit"><li>Kids will love school</li><li>Kids will learn 2x in 2 hours</li><li>Kids will learn life skills</li></ul>
+      <div class="hero-actions">
+        <button class="btn inverse" id="locate">Use my location</button>
+        <a class="btn outline-w" href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to your city</a>
+      </div>
+    </div>
+    <div class="stats"><div><div class="stat" id="total"></div><span>Alpha Schools</span></div><div><div class="stat" id="st-open"></div><span>Now enrolling</span></div><div><div class="stat" id="st-states"></div><span>States, plus Puerto Rico</span></div></div>
   </div>
 </section>
 <div class="toolbar" role="group" aria-label="Filter by status">
   <button class="chip" data-f="all" aria-pressed="true">All<span class="n" id="n-all"></span></button>
   <button class="chip" data-f="open" aria-pressed="false">Now enrolling<span class="n" id="n-open"></span></button>
   <button class="chip" data-f="waitlist" aria-pressed="false">2026–27 waitlist<span class="n" id="n-waitlist"></span></button>
-  <div class="legend"><span><i style="background:var(--accent)"></i>Now enrolling</span><span><i style="border:2px solid #000;background:#fff"></i>Waitlist</span><span><i style="border:2px dashed #999"></i>Proposed</span></div>
+  <div class="legend"><span><i style="background:var(--medium)"></i>Now enrolling</span><span><i style="border:3px solid var(--navy);background:#fff"></i>2026–27 waitlist</span><span><i style="border:2px dashed var(--navy);background:var(--pale)"></i>Proposed</span></div>
 </div>
 <main class="stage">
   <aside class="list" aria-label="Campuses in view">
     <div class="list-h"><span><b id="inview">0</b> <span id="inviewl">campuses</span> in view</span><button id="reset">Show all</button></div>
     <div class="items" id="items"></div>
   </aside>
-  <div class="mapwrap"><div id="map" aria-label="Map of Alpha campuses"></div><div class="toast" id="toast"></div></div>
+  <div class="mapwrap"><div id="map" aria-label="Map of Alpha campuses"></div><button class="explore" id="explore" aria-pressed="false">Use interactive map</button><div class="toast" id="toast"></div></div>
 </main>
-<p class="note">Prototype. Campus list pulled from alpha.school/locations on Oct 20, 2026. Pins are approximate (ZIP or city centroid). Map © OpenStreetMap contributors.</p>
+<p class="note">Pins are approximate (ZIP or city centroid). Map data © OpenStreetMap contributors, tinted to the Alpha palette.</p>
 <footer class="foot"><div class="foot-in">
-  <strong>alpha.</strong><span>Love School. Learn 2x in 2hrs.</span>
-  <a href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to your city</a>
-  <a href="https://alphaanywhere.co/">Alpha Anywhere</a>
-  <span style="margin-left:auto">Design prototype · not the live site</span>
+  <div class="foot-top">
+    <img src="assets/alpha-school-logo-white.svg" alt="Alpha School" width="143" height="52">
+    <p class="foot-line">Finally, a school that works<br><span>as hard as your kid does.</span></p>
+  </div>
+  <div class="foot-cols">
+    <div><b>About</b><a href="https://alpha.school/the-program/#love">Love School</a><a href="https://alpha.school/the-program/#learn">Learn 2x in 2hrs</a><a href="https://alpha.school/the-program/#lifeskills">Learn Life Skills</a></div>
+    <div><b>Locations</b><a href="#">All campuses</a><a href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to my city</a><a href="https://alphaanywhere.co/">Alpha Anywhere</a></div>
+    <div><b>Resources</b><a href="https://alpha.school/upcoming-events/">Events</a><a href="https://alpha.school/faq/">FAQs</a><a href="https://alpha.school/blog/">Blog</a></div>
+  </div>
+  <div class="foot-bot"><span>Design prototype. Not the live alpha.school site.</span><span>Campus list from alpha.school/locations, Oct 20, 2026</span></div>
 </div></footer>
 
 <div class="proto">Prototype A · Map-first · <a href="index.html">switch</a></div>
@@ -152,16 +210,21 @@ window.ALPHA_CAMPUSES=[{"id": "alpha-austin", "name": "Alpha Austin", "grades": 
 const C=window.ALPHA_CAMPUSES, TOUR='https://alpha.school/upcoming-events/';
 const LBL={open:'Now enrolling',waitlist:'2026–27 Waitlist',proposed:'Proposed'};
 const $=s=>document.querySelector(s);
-$('#total').textContent=C.length;
+$('#total').textContent=C.length;$('#st-open').textContent=C.filter(c=>c.status==='open').length;$('#st-states').textContent=new Set(C.map(c=>c.state)).size-1;
 ['all','open','waitlist'].forEach(k=>$('#n-'+k).textContent=k==='all'?C.length:C.filter(c=>c.status===k).length);
 const mobile=matchMedia('(max-width:900px)').matches;
-const map=L.map('map',{zoomControl:false,scrollWheelZoom:true,worldCopyJump:true}).setView([33,-92],4);
+const map=L.map('map',{zoomControl:false,scrollWheelZoom:false,dragging:!mobile,tap:false,worldCopyJump:true}).setView([33,-92],4);
 L.control.zoom({position:'bottomright'}).addTo(map);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',className:'tiles'}).addTo(map);
+// Playbook: the map must not trap normal page scrolling. Scroll-zoom (desktop) and one-finger pan (mobile) only after opt-in.
+const ex=$('#explore');function setExplore(on){ex.setAttribute('aria-pressed',on);ex.textContent=on?'Exit map':'Use interactive map';
+  on?map.scrollWheelZoom.enable():map.scrollWheelZoom.disable();if(mobile)on?map.dragging.enable():map.dragging.disable();}
+ex.onclick=()=>setExplore(ex.getAttribute('aria-pressed')!=='true');
+if(!mobile){map.on('click',()=>setExplore(true));map.getContainer().addEventListener('mouseleave',()=>setExplore(false));}
 const cluster=L.markerClusterGroup({showCoverageOnHover:false,maxClusterRadius:48,spiderfyOnMaxZoom:true,
   iconCreateFunction:c=>{const n=c.getChildCount(),s=n<5?38:n<15?46:56;return L.divIcon({html:'<div class="cl" style="width:'+s+'px;height:'+s+'px">'+n+'</div>',className:'',iconSize:[s,s]})}});
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-function card(c){return `<div class="pc"><span class="badge ${c.status}">${LBL[c.status]}</span>
+function card(c){return `<div class="bar" style="height:6px;background:linear-gradient(160deg,#110068,#0D4AD1)"></div><div class="pc"><span class="badge ${c.status}">${LBL[c.status]}</span>
 <h3>${esc(c.name)}</h3><div class="m">${esc(c.city)}, ${c.state} · Grades ${esc(c.grades)}${c.note?' · '+esc(c.note):''}</div>
 <div class="meta"><div><span>Address</span><b style="font-weight:500;text-align:right">${esc(c.address)}</b></div>${c.price?`<div><span>${c.note?'Program fees':'Tuition'}</span><b style="font-weight:500">${esc(c.price)}</b></div>`:''}</div>
 <div class="b"><a class="btn" href="${c.url}" target="_blank" rel="noopener">Visit campus page</a>

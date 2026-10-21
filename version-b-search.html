@@ -2,148 +2,201 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Locations · Version B (Search-first) · Alpha School prototype</title>
-<link rel="preconnect" href="https://rsms.me/"><link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400&display=swap">
 <style>
-:root{--bg:#fff;--fg:#0a0a0a;--muted:#6b6b6b;--line:#ececec;--soft:#f6f6f6;--accent:#1f4bff;--accent-soft:#eef2ff;--radius:14px;
---font:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+/* Alpha brand tokens: trilogy-group/alpha-website-playbook spec/brand-visual.json (Alpha School Brand Guidelines) */
+:root{
+--navy:#110068;--medium:#0D4AD1;--light:#418BE9;--sky:#00BCFF;--white:#FFFFFF;--black:#000000;
+--pale:#C8DBF4;--stat:#47C4E6;
+--grad-primary:linear-gradient(160deg,#110068 0%,#0D4AD1 100%);
+--grad-deep:linear-gradient(160deg,#110068 0%,#418BE9 100%);
+--ink:#000000;--ink-2:#3a3378;--line:#dfe6f3;--soft:#f3f7fd;
+--radius:24px;--font:"Montserrat",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+--shadow-sm:0 2px 4px -1px rgba(17,0,104,.06),0 1px 2px 0 rgba(17,0,104,.04);
+--shadow-lg:0 18px 32px -8px rgba(17,0,104,.14),0 4px 8px -2px rgba(17,0,104,.05)}
 *{box-sizing:border-box}html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background:#fff;color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
-.nav-in{max-width:1280px;margin:0 auto;height:64px;padding:0 28px;display:flex;align-items:center;gap:32px}
-.logo{font-weight:800;font-size:20px;letter-spacing:-.03em;text-decoration:none}
-.logo span{color:var(--accent)}
-.nav-links{display:flex;gap:28px;margin-left:auto;align-items:center}
-.nav-links a{text-decoration:none;font-size:14px;color:#333}
-.nav-links a:hover{color:var(--fg)}
-.nav-links a.active{color:var(--fg);font-weight:600;border-bottom:2px solid var(--fg);padding-bottom:3px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font:600 14px/1 var(--font);text-decoration:none;cursor:pointer;border:1px solid var(--fg);background:var(--fg);color:#fff;white-space:nowrap;transition:transform .15s,background .15s}
-.btn:hover{transform:translateY(-1px)}
-.btn.ghost{background:#fff;color:var(--fg);border-color:#d6d6d6}
-.btn.ghost:hover{border-color:var(--fg)}
-.btn.accent{background:var(--accent);border-color:var(--accent)}
-.btn.sm{height:36px;padding:0 14px;font-size:13px}
-.nav .btn{height:38px;padding:0 18px}
-.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap}
+h1,h2{font-family:var(--font);text-transform:uppercase;letter-spacing:normal;margin:0}
+h1{font-weight:900;line-height:.95}
+h2{font-weight:800;line-height:1;color:var(--navy)}
+h3{font-weight:700;letter-spacing:normal;color:var(--navy)}
+.kicker{color:var(--sky)}
+/* Header: brand gradient, white canonical logo, white bold nav, outlined pill CTA (live site + Matt's rebuild pattern) */
+.nav{position:sticky;top:0;z-index:1000;background:var(--navy)}
+.nav-in{max-width:1280px;margin:0 auto;height:76px;padding:0 28px;display:flex;align-items:center;gap:32px}
+.logo{display:inline-flex;align-items:center;padding:6px 0}
+.logo img{height:44px;width:auto;display:block}
+.nav-links{display:flex;gap:6px;margin-left:auto;align-items:center}
+.nav-links a{text-decoration:none;font-size:14px;font-weight:700;color:#fff;padding:8px 14px;border-radius:999px;transition:background .15s}
+.nav-links a:hover{background:rgba(255,255,255,.1)}
+.nav-links a.active{background:rgba(255,255,255,.14)}
+.nav-links a.cta{border:1.5px solid #fff;padding:9px 22px;margin-left:12px}
+.nav-links a.cta:hover{background:#fff;color:var(--navy)}
+/* Buttons: pill, Montserrat 700 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:999px;font:700 14px/1 var(--font);text-decoration:none;cursor:pointer;border:1.5px solid var(--medium);background:var(--medium);color:#fff;white-space:nowrap;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s;box-shadow:var(--shadow-sm)}
+.btn:hover{background:var(--navy);border-color:var(--navy);transform:translateY(-1px)}
+.btn.ghost{background:#fff;color:var(--navy);border-color:var(--navy);box-shadow:none}
+.btn.ghost:hover{background:var(--navy);color:#fff}
+.btn.inverse{background:#fff;color:var(--navy);border-color:#fff}
+.btn.inverse:hover{background:var(--pale);border-color:var(--pale)}
+.btn.outline-w{background:transparent;color:#fff;border-color:#fff;box-shadow:none}
+.btn.outline-w:hover{background:#fff;color:var(--navy)}
+.btn.sm{height:38px;padding:0 16px;font-size:13px}
+/* Status badges */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px;white-space:nowrap}
 .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.badge.open{background:var(--accent-soft);color:var(--accent)}
-.badge.waitlist{background:#f3f3f3;color:#333}
-.badge.proposed{background:#fff;color:var(--muted);border:1px dashed #cfcfcf}
-.eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.foot{border-top:1px solid var(--line);margin-top:96px}
-.foot-in{max-width:1280px;margin:0 auto;padding:40px 28px;display:flex;flex-wrap:wrap;gap:16px 40px;align-items:center;color:var(--muted);font-size:14px}
-.foot-in strong{color:var(--fg)}
-.foot-in a{text-decoration:none}
-.proto{position:fixed;left:16px;bottom:16px;z-index:2000;font-size:12px;background:var(--fg);color:#fff;padding:6px 12px;border-radius:999px;opacity:.85}
-.proto a{color:#fff}
-@media (max-width:820px){.nav-in{padding:0 18px;gap:16px}.nav-links .hide-m{display:none}.nav-links{gap:18px}}
-.nav-links a.btn{color:#fff}.nav-links a.btn:hover{color:#fff}
+.badge.open{background:var(--medium);color:#fff}
+.badge.waitlist{background:var(--pale);color:var(--navy)}
+.badge.proposed{background:#fff;color:var(--navy);border:1.5px dashed var(--navy)}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--medium)}
+/* Brand hero field: signature gradient + faceted low-poly lines + wing-edge diagonal */
+.field{position:relative;background:var(--grad-primary);color:#fff;overflow:hidden}
+.field .eyebrow{color:var(--sky)}
+.field::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.11;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' viewBox='0 0 1200 600' fill='none' stroke='white' stroke-width='1.2'%3E%3Cpath d='M620 0 L760 180 L980 120 L1200 260 M760 180 L700 420 L940 380 L1200 520 M980 120 L940 380 M700 420 L860 600 M940 380 L1080 600 M1200 260 L940 380 M760 180 L560 300 L700 420 M560 300 L480 600 M1100 0 L980 120'/%3E%3C/svg%3E");
+background-size:cover;background-position:right center}
+.field.edge{clip-path:polygon(0 0,100% 0,100% calc(100% - 64px),0 100%)}
+.stat{color:var(--stat);font-weight:900;line-height:1}
+/* Footer: navy, white canonical logo, positioning line */
+.foot{background:var(--navy);color:#fff;margin-top:120px}
+.foot-in{max-width:1280px;margin:0 auto;padding:56px 28px 32px}
+.foot-top{display:grid;grid-template-columns:1.1fr 2fr;gap:48px;align-items:start}
+.foot-top img{height:52px;width:auto}
+.foot-line{font-weight:900;text-transform:uppercase;font-size:clamp(22px,2.6vw,34px);line-height:.98;margin:0}
+.foot-line span{color:var(--sky)}
+.foot-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
+.foot-cols b{display:block;font-size:16px;margin-bottom:6px}
+.foot-cols b::after{content:"";display:block;width:48px;height:1px;background:rgba(255,255,255,.4);margin-top:10px}
+.foot-cols a{display:block;text-decoration:none;font-size:14px;padding:5px 0;color:#fff}
+.foot-cols a:hover{opacity:.75}
+.foot-bot{border-top:1px solid rgba(255,255,255,.15);margin-top:40px;padding-top:20px;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.proto{position:fixed;left:16px;bottom:16px;z-index:2000;font-size:12px;font-weight:700;background:var(--navy);color:#fff;padding:7px 14px;border-radius:999px;box-shadow:var(--shadow-lg)}
+.proto a{color:var(--sky)}
+@media (max-width:900px){.nav-in{padding:0 18px;gap:12px;height:64px}.logo img{height:36px}.nav-links .hide-m{display:none}.nav-links a.cta{margin-left:4px;padding:8px 16px}
+ .foot-top{grid-template-columns:1fr;gap:24px}.foot-cols{grid-template-columns:1fr 1fr}.foot-in{padding:44px 18px 28px}.field.edge{clip-path:polygon(0 0,100% 0,100% calc(100% - 32px),0 100%)}}
 
-.hero{max-width:880px;margin:0 auto;padding:96px 28px 40px;text-align:center}
-.hero h1{font-size:clamp(40px,6.4vw,76px);line-height:1;letter-spacing:-.045em;margin:14px 0 18px;font-weight:700}
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero p{color:var(--muted);font-size:19px;margin:0 auto 36px;max-width:560px}
-.search{display:flex;gap:10px;max-width:640px;margin:0 auto;padding:8px;border:1px solid #dedede;border-radius:999px;box-shadow:0 10px 40px rgba(0,0,0,.06);background:#fff;transition:box-shadow .2s,border-color .2s}
-.search:focus-within{border-color:var(--fg);box-shadow:0 14px 50px rgba(0,0,0,.1)}
-.search input{flex:1;min-width:0;border:0;outline:0;font:500 18px var(--font);padding:0 18px;background:transparent}
-.search .btn{height:52px;padding:0 26px;font-size:15px}
-.sub{margin-top:18px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--muted);align-items:center}
-.linkbtn{border:0;background:none;font:600 14px var(--font);color:var(--fg);cursor:pointer;padding:6px 4px;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#ccc}
-.linkbtn:hover{text-decoration-color:var(--fg)}
-.try{color:var(--muted)}
-.try button{border:1px solid #e3e3e3;background:#fff;border-radius:999px;padding:5px 12px;font:500 13px var(--font);cursor:pointer;margin:0 2px;color:#333}
-.try button:hover{border-color:var(--fg)}
-.stats{display:flex;justify-content:center;gap:56px;margin:56px auto 0;max-width:880px;padding:0 28px}
-.stats div{text-align:center}.stats b{display:block;font-size:40px;letter-spacing:-.03em;line-height:1}.stats span{font-size:13px;color:var(--muted)}
-.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
-#results{scroll-margin-top:90px}
-.rhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:64px 0 22px;flex-wrap:wrap}
-.rhead h2{font-size:30px;letter-spacing:-.03em;margin:0}
-.rhead .m{color:var(--muted);font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.card{border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,box-shadow .15s,transform .15s;background:#fff}
-.card:hover{border-color:#cfcfcf;box-shadow:0 12px 40px rgba(0,0,0,.07);transform:translateY(-2px)}
-.card .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.card .dist{font-size:28px;font-weight:700;letter-spacing:-.03em}
-.card .dist small{font-size:14px;font-weight:500;color:var(--muted);margin-left:3px}
-.card h3{margin:0;font-size:20px;letter-spacing:-.02em}
-.card .loc{font-size:14px;color:var(--muted)}
-.card .addr{font-size:13px;color:#444;margin-top:6px}
-.card .acts{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
-.card .acts .btn{flex:1;height:40px;font-size:13px;padding:0 12px}
-.card.first{border-color:var(--fg)}
-.emptyst{border:1px solid var(--line);border-radius:22px;padding:40px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center;background:var(--soft)}
-.emptyst h3{font-size:28px;letter-spacing:-.03em;margin:8px 0 10px}
-.emptyst p{color:#444;margin:0 0 22px}
+.hero{padding:80px 0 128px;text-align:center}
+.hero-in{max-width:920px;margin:0 auto;padding:0 28px;position:relative}
+.hero h1{font-size:clamp(46px,7.4vw,96px);margin:16px 0 22px}
+.hero p{font-size:19px;margin:0 auto 34px;max-width:600px;color:#fff}
+.search{display:flex;gap:10px;max-width:660px;margin:0 auto;padding:8px;border-radius:999px;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.search input{flex:1;min-width:0;border:0;outline:0;font:500 18px var(--font);color:var(--navy);padding:0 20px;background:transparent}
+.search input::placeholder{color:#5b5694}
+.search .btn{height:54px;padding:0 28px;font-size:15px}
+.sub{margin-top:20px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;font-size:14px;align-items:center}
+.linkbtn{border:1.5px solid #fff;background:transparent;color:#fff;font:700 14px var(--font);cursor:pointer;padding:9px 18px;border-radius:999px}
+.linkbtn:hover{background:#fff;color:var(--navy)}
+.try{color:#fff;font-weight:500}
+.try button{border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.08);border-radius:999px;padding:6px 13px;font:700 13px var(--font);cursor:pointer;margin:0 2px;color:#fff}
+.try button:hover{background:#fff;color:var(--navy)}
+.msg{text-align:center;margin-top:18px;min-height:24px;font-size:14px;font-weight:700;color:#fff}
+.msg.err{color:#fff;background:rgba(0,0,0,.25);display:inline-block;padding:6px 14px;border-radius:999px}
+.stats{display:flex;justify-content:center;gap:64px;margin:52px auto 0}
+.stats div{text-align:center}.stats .stat{display:block;font-size:56px}.stats span{font-size:13px;font-weight:700;color:#fff}.stats span.stat{color:var(--stat)}
+.commit{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin:22px 0 0;padding:0;list-style:none;font-weight:700;font-size:15px}
+.commit li{display:flex;gap:10px;align-items:center}.commit li::before{content:"";width:18px;height:2px;background:var(--sky)}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+#results{scroll-margin-top:96px}
+.rhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:64px 0 24px;flex-wrap:wrap}
+.rhead h2{font-size:clamp(28px,3.4vw,44px)}
+.rhead .m{color:var(--ink-2);font-size:14px;font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;background:#fff;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s;overflow:hidden}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.card .ph{background:var(--grad-primary);color:#fff;padding:18px 22px;display:flex;justify-content:space-between;align-items:flex-end;position:relative}
+.card .ph .city{font-weight:900;text-transform:uppercase;font-size:22px;line-height:.95}
+.card .ph .dist{font-size:34px;font-weight:900;line-height:1;color:var(--stat)}
+.card .ph .dist small{font-size:13px;font-weight:700;color:#fff;margin-left:3px}
+.card .bd{padding:18px 22px 22px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card h3{margin:8px 0 0;font-size:19px}
+.card .loc{font-size:14px;color:var(--ink-2)}
+.card .addr{font-size:13px;color:var(--ink);margin-top:4px}
+.card .acts{display:flex;gap:8px;margin-top:auto;padding-top:16px;flex-wrap:wrap}
+.card .acts .btn{flex:1;height:42px;font-size:13px;padding:0 12px}
+.card.first{border:2px solid var(--medium)}
+.emptyst{border-radius:var(--radius);padding:40px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center;background:var(--pale);color:var(--navy)}
+.emptyst h3{font-size:clamp(28px,3vw,40px);font-weight:900;text-transform:uppercase;line-height:.95;margin:12px 0 14px}
+.emptyst p{margin:0 0 22px;color:var(--navy)}
 .emptyst .acts{display:flex;gap:10px;flex-wrap:wrap}
-.opt{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:12px}
-.opt b{display:block;margin-bottom:4px}.opt span{font-size:14px;color:var(--muted)}
-.msg{color:var(--muted);text-align:center;margin-top:18px;min-height:24px;font-size:14px}
-.msg.err{color:#b00020}
-.browse{margin-top:96px}
-.browse h2{font-size:30px;letter-spacing:-.03em;margin:0 0 6px}
-.browse>p{color:var(--muted);margin:0 0 24px}
+.opt{background:#fff;border-radius:18px;padding:18px 20px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.opt b{display:block;margin-bottom:4px;color:var(--navy)}.opt span{font-size:14px;color:var(--ink-2)}.opt a{color:var(--medium);font-weight:700}
+.browse{margin-top:104px}
+.browse h2{font-size:clamp(28px,3.4vw,44px);margin:0 0 10px}
+.browse>p{color:var(--ink-2);margin:0 0 26px}
 details{border-top:1px solid var(--line)}
 details:last-of-type{border-bottom:1px solid var(--line)}
-summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:20px 4px;font-size:18px;font-weight:600;letter-spacing:-.01em}
+summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:20px 4px;font-size:18px;font-weight:700;color:var(--navy)}
 summary::-webkit-details-marker{display:none}
-summary .c{color:var(--muted);font-weight:500;font-size:14px}
-summary::after{content:"+";margin-left:auto;font-weight:400;font-size:24px;line-height:1;transition:transform .2s}
-details[open] summary::after{transform:rotate(45deg)}
-.rows{padding:0 4px 18px;display:grid;grid-template-columns:repeat(2,1fr);gap:4px 32px}
-.row{display:flex;align-items:center;gap:12px;padding:10px 0;text-decoration:none;border-bottom:1px solid #f4f4f4}
-.row:hover .rn{text-decoration:underline}
-.row .rn{font-weight:500}.row .rc{color:var(--muted);font-size:13px}.row .badge{margin-left:auto}
+summary .c{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;border-radius:999px;background:var(--pale);color:var(--navy);font-weight:800;font-size:13px}
+summary::after{content:"";margin-left:auto;width:12px;height:12px;border-right:2.5px solid var(--medium);border-bottom:2.5px solid var(--medium);transform:rotate(45deg);transition:transform .2s;margin-right:6px}
+details[open] summary::after{transform:rotate(225deg)}
+.rows{padding:0 4px 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:4px 32px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;text-decoration:none;border-bottom:1px solid var(--soft)}
+.row:hover .rn{color:var(--medium)}
+.row .rn{font-weight:700;color:var(--navy)}.row .rc{color:var(--ink-2);font-size:13px}.row .badge{margin-left:auto}
+.cta-band{margin-top:104px;border-radius:var(--radius);padding:48px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.cta-band h2{color:#fff;font-size:clamp(28px,3.4vw,44px);font-weight:900}
 @media (max-width:900px){.grid{grid-template-columns:1fr 1fr}.emptyst{grid-template-columns:1fr;padding:28px}}
 @media (max-width:620px){
- .hero{padding:48px 18px 24px}.hero p{font-size:16px;margin-bottom:26px}
- .search{flex-direction:column;border-radius:20px;padding:8px}.search input{height:50px;padding:0 12px;font-size:17px}.search .btn{width:100%;height:50px}
- .stats{gap:22px;margin-top:40px}.stats b{font-size:30px}
- .wrap{padding:0 18px}.grid{grid-template-columns:1fr}.rhead{margin-top:44px}.rhead h2{font-size:24px}
- .rows{grid-template-columns:1fr}.browse{margin-top:64px}.browse h2{font-size:24px}
- .try{width:100%}
+ .hero{padding:44px 0 72px}.hero-in{padding:0 18px}.hero h1{font-size:48px}.hero p{font-size:15px;margin-bottom:24px}
+ .search{flex-direction:column;border-radius:24px;padding:8px}.search input{height:52px;padding:0 14px;font-size:17px}.search .btn{width:100%;height:52px}
+ .stats{gap:24px;margin-top:34px}.stats .stat{font-size:36px}.stats span{font-size:12px}
+ .commit{flex-direction:column;align-items:center;gap:6px;font-size:13px}
+ .wrap{padding:0 18px}.grid{grid-template-columns:1fr}.rhead{margin-top:40px}
+ .rows{grid-template-columns:1fr}.browse{margin-top:72px}.cta-band{padding:32px 24px;margin-top:72px}
 }
 </style></head>
 <body>
 <header class="nav"><div class="nav-in">
-  <a class="logo" href="index.html">alpha<span>.</span></a>
-  <nav class="nav-links">
-    <a class="hide-m" href="https://alpha.school/the-program/#love">Love School</a>
-    <a class="hide-m" href="https://alpha.school/the-program/#learn">Learn 2x in 2hrs</a>
+  <a class="logo" href="index.html" aria-label="Alpha School home"><img src="assets/alpha-school-logo-white.svg" alt="Alpha School" width="121" height="44"></a>
+  <nav class="nav-links" aria-label="Primary">
+    <a class="hide-m" href="https://alpha.school/the-program/">The Program</a>
     <a class="hide-m" href="https://alpha.school/admission/">Admission</a>
     <a class="active" href="#" aria-current="page">Locations</a>
-    <a class="btn" href="https://alpha.school/admission/">Apply</a>
+    <a class="hide-m" href="https://alpha.school/upcoming-events/">Events</a>
+    <a class="cta" href="https://alpha.school/admission/">Apply</a>
   </nav>
 </div></header>
 
-<section class="hero">
+<section class="hero field edge">
+ <div class="hero-in">
   <div class="eyebrow">Locations</div>
-  <h1>Love School,<br><em>near you.</em></h1>
-  <p>Learn 2x in 2hrs at an Alpha campus. Enter your ZIP or city to see the closest ones.</p>
+  <h1>Find your<br><span class="kicker">Alpha School.</span></h1>
+  <p>Enter your ZIP or city to see the Alpha Schools closest to you.</p>
   <form class="search" id="f" role="search">
     <input id="q" name="q" autocomplete="postal-code" placeholder="Enter your ZIP or city" aria-label="Enter your ZIP or city">
     <button class="btn" type="submit">Find campuses</button>
   </form>
   <div class="sub">
-    <button class="linkbtn" id="locate" type="button">◎ Use my location</button>
-    <span class="try">· Try <button type="button" data-q="78701">78701</button><button type="button" data-q="Miami">Miami</button><button type="button" data-q="Seattle, WA">Seattle</button><button type="button" data-q="Boise">Boise</button></span>
+    <button class="linkbtn" id="locate" type="button">Use my location</button>
+    <span class="try">Try <button type="button" data-q="78701">78701</button><button type="button" data-q="Miami">Miami</button><button type="button" data-q="Seattle, WA">Seattle</button><button type="button" data-q="Boise">Boise</button></span>
   </div>
   <div class="msg" id="msg" aria-live="polite"></div>
-  <div class="stats"><div><b id="s1"></b><span>campuses</span></div><div><b id="s2"></b><span>states + PR</span></div><div><b id="s3"></b><span>now enrolling</span></div></div>
+  <div class="stats"><div><span class="stat" id="s1"></span><span>Alpha Schools</span></div><div><span class="stat" id="s3"></span><span>Now enrolling</span></div><div><span class="stat" id="s2"></span><span>States, plus Puerto Rico</span></div></div>
+  <ul class="commit"><li>Kids will love school</li><li>Kids will learn 2x in 2 hours</li><li>Kids will learn life skills</li></ul>
+ </div>
 </section>
 <div class="wrap">
   <section id="results" aria-live="polite"></section>
   <section class="browse">
-    <h2>Browse all by state</h2>
-    <p>Every campus, one tap away.</p>
+    <h2>Browse all<br>by state</h2>
+    <p>Every Alpha School, one tap away.</p>
     <div id="states"></div>
   </section>
+  <section class="cta-band field"><h2>Don’t see<br><span class="kicker">your city?</span></h2><a class="btn inverse" href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to your city</a></section>
 </div>
 <footer class="foot"><div class="foot-in">
-  <strong>alpha.</strong><span>Love School. Learn 2x in 2hrs.</span>
-  <a href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to your city</a>
-  <a href="https://alphaanywhere.co/">Alpha Anywhere</a>
-  <span style="margin-left:auto">Design prototype · not the live site</span>
+  <div class="foot-top">
+    <img src="assets/alpha-school-logo-white.svg" alt="Alpha School" width="143" height="52">
+    <p class="foot-line">Finally, a school that works<br><span>as hard as your kid does.</span></p>
+  </div>
+  <div class="foot-cols">
+    <div><b>About</b><a href="https://alpha.school/the-program/#love">Love School</a><a href="https://alpha.school/the-program/#learn">Learn 2x in 2hrs</a><a href="https://alpha.school/the-program/#lifeskills">Learn Life Skills</a></div>
+    <div><b>Locations</b><a href="#">All campuses</a><a href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to my city</a><a href="https://alphaanywhere.co/">Alpha Anywhere</a></div>
+    <div><b>Resources</b><a href="https://alpha.school/upcoming-events/">Events</a><a href="https://alpha.school/faq/">FAQs</a><a href="https://alpha.school/blog/">Blog</a></div>
+  </div>
+  <div class="foot-bot"><span>Design prototype. Not the live alpha.school site.</span><span>Campus list from alpha.school/locations, Oct 20, 2026</span></div>
 </div></footer>
 
 <div class="proto">Prototype B · Search-first · <a href="index.html">switch</a></div>
@@ -174,9 +227,9 @@ function resolve(raw){const s=raw.trim();if(!s)return null;
   if(!hit&&cm) return {lat:cm.lat,lng:cm.lng,label:cm.city+', '+cm.state};
   if(!hit) hit=CITIES.find(c=>norm(c[0]).startsWith(n)&&n.length>=4&&(!st||c[1]===st));
   return hit?{lat:hit[2],lng:hit[3],label:hit[0]+', '+hit[1]}:{err:'We couldn’t find “'+s+'”. Try a 5-digit ZIP or “City, ST”.'}}
-function card(c,i){return `<article class="card${i===0?' first':''}"><div class="top"><span class="badge ${c.status}">${LBL[c.status]}</span>${c._d!=null?`<span class="dist">${c._d<1?'<1':Math.round(c._d)}<small>mi</small></span>`:''}</div>
-<h3>${esc(c.name)}</h3><div class="loc">${esc(c.city)}, ${c.state} · Grades ${esc(c.grades)}${c.note?' · '+esc(c.note):''}</div><div class="addr">${esc(c.address)}</div>
-<div class="acts"><a class="btn" href="${c.url}" target="_blank" rel="noopener">Visit campus</a><a class="btn ghost" href="${TOUR}" target="_blank" rel="noopener">Book a tour</a></div></article>`}
+function card(c,i){return `<article class="card${i===0?' first':''}"><div class="ph"><span class="city">${esc(c.city)}</span>${c._d!=null?`<span class="dist">${c._d<1?'<1':Math.round(c._d)}<small>mi</small></span>`:''}</div>
+<div class="bd"><div><span class="badge ${c.status}">${LBL[c.status]}</span></div><h3>${esc(c.name)}</h3><div class="loc">${esc(c.city)}, ${c.state} · Grades ${esc(c.grades)}${c.note?' · '+esc(c.note):''}</div><div class="addr">${esc(c.address)}</div>
+<div class="acts"><a class="btn" href="${c.url}" target="_blank" rel="noopener">Visit campus</a><a class="btn ghost" href="${TOUR}" target="_blank" rel="noopener">Book a tour</a></div></div></article>`}
 function render(r){const out=$('#results');$('#msg').textContent='';$('#msg').className='msg';
   if(r.err){$('#msg').textContent=r.err;$('#msg').classList.add('err');return}
   let list,title,meta;
@@ -187,8 +240,8 @@ function render(r){const out=$('#results');$('#msg').textContent='';$('#msg').cl
   out.innerHTML=`<div class="rhead"><h2>${esc(title)}</h2><span class="m">${meta} · distances approximate</span></div><div class="grid">${list.map(card).join('')}</div>`;
   out.scrollIntoView({behavior:'smooth'});}
 function empty(label,all){const near=all.filter(c=>c._d!=null).slice(0,3);
-  $('#results').innerHTML=`<div class="rhead"><h2>Nothing near ${esc(label)} yet</h2><span class="m">No campus within ${NEAR} miles</span></div>
-  <div class="emptyst"><div><span class="badge proposed">Coming to more cities</span><h3>Bring Alpha to ${esc(label.split(',')[0])}.</h3>
+  $('#results').innerHTML=`<div class="rhead"><h2>Nothing near ${esc(label.split(',')[0])} yet.</h2><span class="m">No campus within ${NEAR} miles</span></div>
+  <div class="emptyst"><div><span class="badge waitlist">Coming to more cities</span><h3>Bring Alpha to ${esc(label.split(',')[0])}.</h3>
   <p>We open new campuses where families ask for them. Join the waitlist for your city and we’ll tell you the moment there’s news. Or start now with Alpha Anywhere, our virtual option.</p>
   <div class="acts"><a class="btn" href="https://alpha.school/bring-alpha-to-your-city/">Join the waitlist for my city</a><a class="btn ghost" href="https://alphaanywhere.co/">Explore Alpha Anywhere</a></div></div>
   <div>${near.map(c=>`<div class="opt"><b>${esc(c.name)} · ${Math.round(c._d)} mi</b><span>${esc(c.city)}, ${c.state} · ${LBL[c.status]} · <a href="${c.url}">View</a></span></div>`).join('')}</div></div>`;

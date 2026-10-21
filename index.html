@@ -1,66 +1,105 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Alpha School · Locations redesign prototypes</title><link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-<style>:root{--bg:#fff;--fg:#0a0a0a;--muted:#6b6b6b;--line:#ececec;--soft:#f6f6f6;--accent:#1f4bff;--accent-soft:#eef2ff;--radius:14px;
---font:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+<title>Alpha School · Locations redesign prototypes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap">
+<style>/* Alpha brand tokens: trilogy-group/alpha-website-playbook spec/brand-visual.json (Alpha School Brand Guidelines) */
+:root{
+--navy:#110068;--medium:#0D4AD1;--light:#418BE9;--sky:#00BCFF;--white:#FFFFFF;--black:#000000;
+--pale:#C8DBF4;--stat:#47C4E6;
+--grad-primary:linear-gradient(160deg,#110068 0%,#0D4AD1 100%);
+--grad-deep:linear-gradient(160deg,#110068 0%,#418BE9 100%);
+--ink:#000000;--ink-2:#3a3378;--line:#dfe6f3;--soft:#f3f7fd;
+--radius:24px;--font:"Montserrat",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+--shadow-sm:0 2px 4px -1px rgba(17,0,104,.06),0 1px 2px 0 rgba(17,0,104,.04);
+--shadow-lg:0 18px 32px -8px rgba(17,0,104,.14),0 4px 8px -2px rgba(17,0,104,.05)}
 *{box-sizing:border-box}html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background:#fff;color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
-.nav-in{max-width:1280px;margin:0 auto;height:64px;padding:0 28px;display:flex;align-items:center;gap:32px}
-.logo{font-weight:800;font-size:20px;letter-spacing:-.03em;text-decoration:none}
-.logo span{color:var(--accent)}
-.nav-links{display:flex;gap:28px;margin-left:auto;align-items:center}
-.nav-links a{text-decoration:none;font-size:14px;color:#333}
-.nav-links a:hover{color:var(--fg)}
-.nav-links a.active{color:var(--fg);font-weight:600;border-bottom:2px solid var(--fg);padding-bottom:3px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font:600 14px/1 var(--font);text-decoration:none;cursor:pointer;border:1px solid var(--fg);background:var(--fg);color:#fff;white-space:nowrap;transition:transform .15s,background .15s}
-.btn:hover{transform:translateY(-1px)}
-.btn.ghost{background:#fff;color:var(--fg);border-color:#d6d6d6}
-.btn.ghost:hover{border-color:var(--fg)}
-.btn.accent{background:var(--accent);border-color:var(--accent)}
-.btn.sm{height:36px;padding:0 14px;font-size:13px}
-.nav .btn{height:38px;padding:0 18px}
-.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap}
+h1,h2{font-family:var(--font);text-transform:uppercase;letter-spacing:normal;margin:0}
+h1{font-weight:900;line-height:.95}
+h2{font-weight:800;line-height:1;color:var(--navy)}
+h3{font-weight:700;letter-spacing:normal;color:var(--navy)}
+.kicker{color:var(--sky)}
+/* Header: brand gradient, white canonical logo, white bold nav, outlined pill CTA (live site + Matt's rebuild pattern) */
+.nav{position:sticky;top:0;z-index:1000;background:var(--navy)}
+.nav-in{max-width:1280px;margin:0 auto;height:76px;padding:0 28px;display:flex;align-items:center;gap:32px}
+.logo{display:inline-flex;align-items:center;padding:6px 0}
+.logo img{height:44px;width:auto;display:block}
+.nav-links{display:flex;gap:6px;margin-left:auto;align-items:center}
+.nav-links a{text-decoration:none;font-size:14px;font-weight:700;color:#fff;padding:8px 14px;border-radius:999px;transition:background .15s}
+.nav-links a:hover{background:rgba(255,255,255,.1)}
+.nav-links a.active{background:rgba(255,255,255,.14)}
+.nav-links a.cta{border:1.5px solid #fff;padding:9px 22px;margin-left:12px}
+.nav-links a.cta:hover{background:#fff;color:var(--navy)}
+/* Buttons: pill, Montserrat 700 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:999px;font:700 14px/1 var(--font);text-decoration:none;cursor:pointer;border:1.5px solid var(--medium);background:var(--medium);color:#fff;white-space:nowrap;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s;box-shadow:var(--shadow-sm)}
+.btn:hover{background:var(--navy);border-color:var(--navy);transform:translateY(-1px)}
+.btn.ghost{background:#fff;color:var(--navy);border-color:var(--navy);box-shadow:none}
+.btn.ghost:hover{background:var(--navy);color:#fff}
+.btn.inverse{background:#fff;color:var(--navy);border-color:#fff}
+.btn.inverse:hover{background:var(--pale);border-color:var(--pale)}
+.btn.outline-w{background:transparent;color:#fff;border-color:#fff;box-shadow:none}
+.btn.outline-w:hover{background:#fff;color:var(--navy)}
+.btn.sm{height:38px;padding:0 16px;font-size:13px}
+/* Status badges */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px;white-space:nowrap}
 .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.badge.open{background:var(--accent-soft);color:var(--accent)}
-.badge.waitlist{background:#f3f3f3;color:#333}
-.badge.proposed{background:#fff;color:var(--muted);border:1px dashed #cfcfcf}
-.eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.foot{border-top:1px solid var(--line);margin-top:96px}
-.foot-in{max-width:1280px;margin:0 auto;padding:40px 28px;display:flex;flex-wrap:wrap;gap:16px 40px;align-items:center;color:var(--muted);font-size:14px}
-.foot-in strong{color:var(--fg)}
-.foot-in a{text-decoration:none}
-.proto{position:fixed;left:16px;bottom:16px;z-index:2000;font-size:12px;background:var(--fg);color:#fff;padding:6px 12px;border-radius:999px;opacity:.85}
-.proto a{color:#fff}
-@media (max-width:820px){.nav-in{padding:0 18px;gap:16px}.nav-links .hide-m{display:none}.nav-links{gap:18px}}
-.nav-links a.btn{color:#fff}.nav-links a.btn:hover{color:#fff}
+.badge.open{background:var(--medium);color:#fff}
+.badge.waitlist{background:var(--pale);color:var(--navy)}
+.badge.proposed{background:#fff;color:var(--navy);border:1.5px dashed var(--navy)}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--medium)}
+/* Brand hero field: signature gradient + faceted low-poly lines + wing-edge diagonal */
+.field{position:relative;background:var(--grad-primary);color:#fff;overflow:hidden}
+.field .eyebrow{color:var(--sky)}
+.field::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.11;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' viewBox='0 0 1200 600' fill='none' stroke='white' stroke-width='1.2'%3E%3Cpath d='M620 0 L760 180 L980 120 L1200 260 M760 180 L700 420 L940 380 L1200 520 M980 120 L940 380 M700 420 L860 600 M940 380 L1080 600 M1200 260 L940 380 M760 180 L560 300 L700 420 M560 300 L480 600 M1100 0 L980 120'/%3E%3C/svg%3E");
+background-size:cover;background-position:right center}
+.field.edge{clip-path:polygon(0 0,100% 0,100% calc(100% - 64px),0 100%)}
+.stat{color:var(--stat);font-weight:900;line-height:1}
+/* Footer: navy, white canonical logo, positioning line */
+.foot{background:var(--navy);color:#fff;margin-top:120px}
+.foot-in{max-width:1280px;margin:0 auto;padding:56px 28px 32px}
+.foot-top{display:grid;grid-template-columns:1.1fr 2fr;gap:48px;align-items:start}
+.foot-top img{height:52px;width:auto}
+.foot-line{font-weight:900;text-transform:uppercase;font-size:clamp(22px,2.6vw,34px);line-height:.98;margin:0}
+.foot-line span{color:var(--sky)}
+.foot-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
+.foot-cols b{display:block;font-size:16px;margin-bottom:6px}
+.foot-cols b::after{content:"";display:block;width:48px;height:1px;background:rgba(255,255,255,.4);margin-top:10px}
+.foot-cols a{display:block;text-decoration:none;font-size:14px;padding:5px 0;color:#fff}
+.foot-cols a:hover{opacity:.75}
+.foot-bot{border-top:1px solid rgba(255,255,255,.15);margin-top:40px;padding-top:20px;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.proto{position:fixed;left:16px;bottom:16px;z-index:2000;font-size:12px;font-weight:700;background:var(--navy);color:#fff;padding:7px 14px;border-radius:999px;box-shadow:var(--shadow-lg)}
+.proto a{color:var(--sky)}
+@media (max-width:900px){.nav-in{padding:0 18px;gap:12px;height:64px}.logo img{height:36px}.nav-links .hide-m{display:none}.nav-links a.cta{margin-left:4px;padding:8px 16px}
+ .foot-top{grid-template-columns:1fr;gap:24px}.foot-cols{grid-template-columns:1fr 1fr}.foot-in{padding:44px 18px 28px}.field.edge{clip-path:polygon(0 0,100% 0,100% calc(100% - 32px),0 100%)}}
 
-main{max-width:1120px;margin:0 auto;padding:80px 28px}
-h1{font-size:clamp(36px,5vw,56px);letter-spacing:-.04em;line-height:1.03;margin:12px 0 14px}
-.lead{color:var(--muted);font-size:18px;max-width:640px;margin:0 0 48px}
+main{max-width:1120px;margin:0 auto;padding:56px 28px 0}.ix{padding:72px 0 110px}.ix-in{max-width:1120px;margin:0 auto;padding:0 28px}
+h1{font-size:clamp(40px,5.6vw,72px);margin:14px 0 18px}
+.lead{color:#fff;font-size:18px;max-width:640px;margin:0}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.v{border:1px solid var(--line);border-radius:22px;overflow:hidden;text-decoration:none;display:block;transition:box-shadow .2s,transform .2s}
+.v{border:1px solid var(--line);border-radius:var(--radius);background:#fff;overflow:hidden;text-decoration:none;display:block;transition:box-shadow .2s,transform .2s}
 .v:hover{box-shadow:0 18px 50px rgba(0,0,0,.08);transform:translateY(-3px)}
 .v img{width:100%;display:block;border-bottom:1px solid var(--line);aspect-ratio:16/10;object-fit:cover;object-position:top}
-.v div{padding:24px}.v h2{margin:6px 0 6px;font-size:24px;letter-spacing:-.02em}.v p{margin:0;color:var(--muted)}
-.meta{margin-top:40px;font-size:14px;color:var(--muted)}
+.v div{padding:24px}.v h2{margin:8px 0 8px;font-size:28px}.v p{margin:0;color:var(--ink-2)}
+.meta{margin-top:40px;font-size:14px;color:var(--ink-2)}
 @media (max-width:760px){.two{grid-template-columns:1fr}main{padding:48px 18px}}
 </style></head><body>
 <header class="nav"><div class="nav-in">
-  <a class="logo" href="index.html">alpha<span>.</span></a>
-  <nav class="nav-links">
-    <a class="hide-m" href="https://alpha.school/the-program/#love">Love School</a>
-    <a class="hide-m" href="https://alpha.school/the-program/#learn">Learn 2x in 2hrs</a>
+  <a class="logo" href="index.html" aria-label="Alpha School home"><img src="assets/alpha-school-logo-white.svg" alt="Alpha School" width="121" height="44"></a>
+  <nav class="nav-links" aria-label="Primary">
+    <a class="hide-m" href="https://alpha.school/the-program/">The Program</a>
     <a class="hide-m" href="https://alpha.school/admission/">Admission</a>
     <a class="active" href="index.html" aria-current="page">Locations</a>
-    <a class="btn" href="https://alpha.school/admission/">Apply</a>
+    <a class="hide-m" href="https://alpha.school/upcoming-events/">Events</a>
+    <a class="cta" href="https://alpha.school/admission/">Apply</a>
   </nav>
 </div></header>
 
-<main>
+<section class="ix field edge"><div class="ix-in">
 <div class="eyebrow">Alpha GTM · Design prototypes · Oct 2026</div>
-<h1>How campuses should appear on alpha.school</h1>
-<p class="lead">Two ways to replace the locations dropdown with one “Locations” link that works for 47 campuses today and hundreds later. Same minimal style; different first move.</p>
+<h1>Two ways to<br><span class="kicker">find a campus.</span></h1>
+<p class="lead">Both replace the locations dropdown with one Locations link that works for 47 campuses today and hundreds later. Same Alpha look, different first move.</p>
+</div></section>
+<main>
 <div class="two">
 <a class="v" href="version-a-map.html"><img src="screenshots/version-a-desktop.png" alt="Version A screenshot"><div><span class="eyebrow">Version A</span><h2>Map-first</h2><p>A full-width clustered map that zooms from country to campus, with a list that syncs to what’s in view.</p></div></a>
 <a class="v" href="version-b-search.html"><img src="screenshots/version-b-desktop.png" alt="Version B screenshot"><div><span class="eyebrow">Version B</span><h2>Search-first</h2><p>One input: your ZIP or city. Nearest campuses by distance, plus a browse-by-state accordion.</p></div></a>
@@ -68,10 +107,16 @@ h1{font-size:clamp(36px,5vw,56px);letter-spacing:-.04em;line-height:1.03;margin:
 <p class="meta">Campus data pulled from alpha.school/locations on Oct 20, 2026 (47 campuses). Pins and distances are approximate (US Census ZIP/city centroids). Prototype only; not published to the live site.</p>
 </main>
 <footer class="foot"><div class="foot-in">
-  <strong>alpha.</strong><span>Love School. Learn 2x in 2hrs.</span>
-  <a href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to your city</a>
-  <a href="https://alphaanywhere.co/">Alpha Anywhere</a>
-  <span style="margin-left:auto">Design prototype · not the live site</span>
+  <div class="foot-top">
+    <img src="assets/alpha-school-logo-white.svg" alt="Alpha School" width="143" height="52">
+    <p class="foot-line">Finally, a school that works<br><span>as hard as your kid does.</span></p>
+  </div>
+  <div class="foot-cols">
+    <div><b>About</b><a href="https://alpha.school/the-program/#love">Love School</a><a href="https://alpha.school/the-program/#learn">Learn 2x in 2hrs</a><a href="https://alpha.school/the-program/#lifeskills">Learn Life Skills</a></div>
+    <div><b>Locations</b><a href="#">All campuses</a><a href="https://alpha.school/bring-alpha-to-your-city/">Bring Alpha to my city</a><a href="https://alphaanywhere.co/">Alpha Anywhere</a></div>
+    <div><b>Resources</b><a href="https://alpha.school/upcoming-events/">Events</a><a href="https://alpha.school/faq/">FAQs</a><a href="https://alpha.school/blog/">Blog</a></div>
+  </div>
+  <div class="foot-bot"><span>Design prototype. Not the live alpha.school site.</span><span>Campus list from alpha.school/locations, Oct 20, 2026</span></div>
 </div></footer>
 
 </body></html>
